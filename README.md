@@ -251,7 +251,7 @@ Backend venv 생성 + 의존성 설치 + Flutter Package fetch 가 자동으로 
 질문: 이 해고가 정당한 해고인가, 부당해고인가?
 ```
 
-**생성** 버튼을 누르면 LLM이 상황을 분석하고 양 팀의 Agent Profile을 자동 생성합니다.
+**토론 시작** 버튼을 누르면 LLM이 상황을 분석하고 양 팀의 Agent Profile을 자동 생성합니다.
 
 ### Step 4. Review Agent Setup
 
@@ -259,7 +259,6 @@ Backend venv 생성 + 의존성 설치 + Flutter Package fetch 가 자동으로 
 
 - 각 Agent의 성격, 전문분야, 토론 Style을 수정할 수 있습니다
 - 특정 Agent에 다른 LLM Model을 지정할 수 있습니다 (Agent별 LLM Override)
-- **재생성** 버튼으로 Profile을 다시 생성할 수 있습니다
 
 ### Step 5. Run & Observe Debate
 
@@ -398,10 +397,6 @@ Law-Nuri/
 3. 사용할 Model 선택
 
 Custom Provider를 추가하면 OpenAI 호환 API를 제공하는 모든 Service를 사용할 수 있습니다 (예: Ollama, LM Studio, Together AI).
-
-### API Key Security
-
-API 키는 평문으로 저장되지 않습니다. `cryptography` Package의 Fernet 대칭키 암호화를 사용하여 `settings.json`에 암호화된 형태로 저장됩니다. 암호화 키는 최초 실행 시 자동 생성됩니다.
 
 ---
 
