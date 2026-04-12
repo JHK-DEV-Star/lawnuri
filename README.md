@@ -7,7 +7,7 @@
 *실제 판례와 법률 논리를 기반으로 한 Multi-Agent 법정 시뮬레이션*
 
 <p>
-<a href="https://github.com/JHK-DEV-Star/lawnuri/releases/tag/v1.0.0"><img src="https://img.shields.io/github/v/release/JHK-DEV-Star/lawnuri?style=flat-square&color=blue" alt="Release"></a>
+<a href="https://github.com/JHK-DEV-Star/lawnuri/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/Release-v1.0.0-blue?style=flat-square" alt="Release"></a>
 <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
 <img src="https://img.shields.io/badge/Flutter-3.10+-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter">
 <img src="https://img.shields.io/badge/FastAPI-0.115+-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
@@ -15,22 +15,22 @@
 </p>
 
 <p>
-<a href="#-빠른-시작">빠른 시작</a> •
-<a href="#-사용-가이드">사용 가이드</a> •
-<a href="#-국가법령정보센터-openapi">법률 API</a> •
-<a href="#-아키텍처">아키텍처</a> •
-<a href="#-지원-llm-provider">LLM Provider</a>
+<a href="#quick-start">Quick Start</a> •
+<a href="#usage-guide">Usage Guide</a> •
+<a href="#국가법령정보센터-openapi">법률 API</a> •
+<a href="#architecture">Architecture</a> •
+<a href="#supported-llm-providers">LLM Provider</a>
 </p>
 
 </div>
 
 ---
 
-## 개요
+## Overview
 
 **Law-Nuri**는 법률 분쟁을 Multi-Agent 시뮬레이션으로 돌려보며, 그 과정에서 **실제 판례와 법적 인사이트를 수집**하는 AI 법정 토론 플랫폼입니다.
 
-단순히 LLM에 법률 질문을 던져 하나의 답을 받는 것이 아닙니다. 두 팀의 AI Agent가 실제 판례와 법령을 검색하고 서로 인용·반박하면서 대립 토론을 수행하는 동안, 사용자는 **토론을 관찰하며 쟁점과 관련된 판례·법령·논리의 맥락을 축적**하게 됩니다. 독립된 AI 심판 3명이 법적 추론의 질, 증거의 신뢰성, 논증의 설득력을 다차원으로 평가하고, 모든 검색 결과·내부 리뷰·인용 근거가 투명하게 기록되므로, 단순한 판결 결과뿐 아니라 **"이 쟁점에서 어떤 판례가 어떤 논리로 인용되고, 어떤 판례가 반박되었는가"**까지 한눈에 확인할 수 있습니다.
+단순히 LLM에 법률 질문을 던져 하나의 답을 받는 것이 아닙니다. 두 팀의 AI Agent가 실제 판례와 법령을 검색하고 서로 인용·반박하면서 대립 토론을 수행하는 동안, 사용자는 **토론을 관찰하며 쟁점과 관련된 판례·법령·논리의 맥락을 축적**하게 됩니다. 독립된 AI 심판 3명이 법적 추론의 질, 증거의 신뢰성, 논증의 설득력을 다차원으로 평가하고, 모든 검색 결과·내부 리뷰·인용 근거가 투명하게 기록되므로, 단순한 판결 결과뿐 아니라 "**이 쟁점에서 어떤 판례가 어떤 논리로 인용되고, 어떤 판례가 반박되었는가**"까지 한눈에 확인할 수 있습니다.
 
 > **입력**: 상황 설명 + 법률 질문 + 증거 파일 (선택)
 >
@@ -46,15 +46,15 @@
 <br><sub><i>AI 상황 분석 결과 — 쟁점 정리, 관련 법률 도출, 양측 입장 구성</i></sub>
 </div>
 
-### 동작 원리
+### How It Works
 
 각 팀의 sub-graph는 라운드마다 **역할 배정 → 병렬 검색 → 내부 토론 → 발언 생성** 4단계로 동작합니다. 핵심은 세 번째 단계 — Agent들이 검색된 판례를 `ACCEPT / REJECT / REVIEW_MORE` 태그로 투표하여 통과한 판례만 whitelist에 올라가고, 마지막 발언자는 이 whitelist만 볼 수 있어 검증되지 않은 인용이 최종 발언에 유입될 경로를 구조적으로 차단합니다. 검색 결과에 없는 사건번호 인용은 자동으로 탐지·경고됩니다.
 
 심판 sub-graph는 독립적으로 m명의 Agent(기본 3명)가 각 라운드를 병렬 평가하고, 최종 라운드에서 다차원 점수와 결정적 증거를 산출합니다.
 
-### 왜 Multi-Agent인가?
+### Why Multi-Agent?
 
-단일 LLM은 법률 질문에 대해 종종 **추상적인 원론(原論)으로 도피**하거나, **사실 관계를 임의로 왜곡**하거나, **존재하지 않는 판례를 그럴듯하게 지어내는** 문제를 보입니다. Law-Nuri는 이런 약점을 구조적으로 억제하기 위해 Multi-Agent를 채택했습니다. 서로 다른 Agent가 같은 쟁점을 독립적으로 검색·해석하고 팀 내부에서 상호 검증하면, 한 Agent의 모호한 답변이나 사실 왜곡이 다른 Agent의 reject·counter-argument에 걸려 필터링됩니다.
+Single LLM은 법률 질문에 대해 종종 **추상적인 원론(原論)으로 도피**하거나, **사실 관계를 임의로 왜곡**하거나, **존재하지 않는 판례를 그럴듯하게 지어내는** 문제를 보입니다. Law-Nuri는 이런 약점을 구조적으로 억제하기 위해 Multi-Agent를 채택했습니다. 서로 다른 Agent가 같은 쟁점을 독립적으로 검색·해석하고 팀 내부에서 상호 검증하면, 한 Agent의 모호한 답변이나 사실 왜곡이 다른 Agent의 reject·counter-argument에 걸려 필터링됩니다.
 
 - **시뮬레이션을 통한 인사이트 수집**: 토론이 진행되는 동안 쟁점과 관련된 판례·법령이 실시간으로 검색·인용·반박되고, 사용자는 그 전 과정을 관찰하며 법리적 맥락을 자연스럽게 축적
 - **대립 구조로 논리의 허점을 발견**: n:n Agent(기본 5:5)가 양쪽 입장에서 논쟁하면서, 한쪽만으로는 보이지 않는 법적 쟁점과 반론을 드러냄
@@ -66,9 +66,9 @@
 
 ---
 
-## 주요 기능
+## Features
 
-### Multi-Agent 토론 시스템
+### Multi-Agent Debate System
 
 - **n:n:m Agent 구조** — 팀당 n명(기본 5명)의 토론 Agent + m명(기본 3명)의 중립 심판 Agent. 팀/심판 수는 설정에서 조정 가능
 - **동적 역할 배정** — 라운드마다 코디네이터, 연구자, 옹호자, 반론자, 종합자 역할을 LLM이 배정
@@ -88,7 +88,7 @@
 <br><sub><i>Agent 목록 — 팀 A, 팀 B, 심판별 이름과 전문분야</i></sub>
 </div>
 
-### 판례 기반 법률 검색 (RAG)
+### Case Law Search (RAG)
 
 - **국가법령정보센터 연동** — 법령, 판례, 헌재결정례 등 14개 법률 카테고리에서 실제 판례를 실시간 검색
 - **판례 관련성 검증** — 검색된 판례가 현재 쟁점과 실질적으로 관련되는지 Multi-Agent가 내부 토론으로 검증
@@ -97,7 +97,7 @@
 - **지식 graph** — 엔티티/관계 추출을 통한 구조화된 법률 추론
 - **허위 인용 탐지** — 존재하지 않는 판례번호를 자동 감지하고 증거 점수에 페널티 부여
 
-### 토론 진행 및 제어
+### Debate Control
 
 - **라운드 설정** — 최소/최대 라운드 수 설정, 심판 조기 종료 투표
 - **사용자 개입** — 토론 중 팀에 힌트, 증거, 지시사항 주입
@@ -119,7 +119,7 @@
 <br><sub><i>팀 내부 토론 — 판례 검증 투표(ACCEPT/REJECT/REVIEW_MORE), 전략 논의, 리뷰 큐</i></sub>
 </div>
 
-### 보고서 및 시각화
+### Reports & Visualization
 
 - **PDF 보고서** — 토론 종료 후 자동 생성되는 종합 보고서. 다음 항목을 포함합니다:
   - **상황 분석** — 입력된 상황과 AI가 분석한 쟁점 요약
@@ -144,7 +144,7 @@
 <br><sub><i>Force-Directed 토론 graph — Agent 간 관계 및 증거 흐름 시각화</i></sub>
 </div>
 
-### 판결 및 점수
+### Judgment & Scoring
 
 - **독립 판결** — m명(기본 3명)의 심판 Agent가 각자 독립적으로 판결 및 점수를 부여
 - **다차원 평가** — 법적 추론, 증거 품질, 설득력, 반론 효과성 각각 점수화
@@ -156,7 +156,7 @@
 <br><sub><i>심판별 판결 결과 — 점수, 결정적 증거, 판결 이유</i></sub>
 </div>
 
-### Multi-Provider LLM 지원
+### Multi-Provider LLM Support
 
 - **5개 Provider** — OpenAI, Google Gemini, Anthropic, Vertex AI, Custom (OpenAI 호환)
 - **암호화된 API 키** — Fernet 암호화로 자격증명 안전 저장
@@ -168,15 +168,15 @@
 <br><sub><i>LLM Provider 설정 — API 키 관리, 모델 선택, 연결 테스트</i></sub>
 </div>
 
-### 다국어 지원
+### Multilingual Support
 
 - **10개 언어** — 한국어, 영어, 일본어, 중국어, 스페인어, 프랑스어, 독일어, 포르투갈어, 베트남어, 태국어
 
 ---
 
-## 빠른 시작
+## Quick Start
 
-### Release 다운로드 (권장)
+### Download Release (Recommended)
 
 [다운로드](https://github.com/JHK-DEV-Star/lawnuri/releases/tag/v1.0.0)에서 최신 버전의 `LawNuri.zip`을 다운로드합니다.
 
@@ -200,7 +200,7 @@ LawNuri/
 
 > **참고**: Release는 현재 Windows 전용입니다.
 
-### 소스에서 실행
+### Run from Source
 
 Python 3.11+ 와 Flutter 3.10+ 가 설치되어 있어야 합니다.
 
@@ -212,9 +212,9 @@ setup.bat
 
 ---
 
-## 사용 가이드
+## Usage Guide
 
-### Step 1. LLM Provider 설정
+### Step 1. LLM Provider Setup
 
 앱을 처음 실행하면 **설정** 화면으로 이동합니다.
 
@@ -229,15 +229,15 @@ Release 버전에서는 server/data/settings.json 경로입니다.
 모든 API 키는 Fernet 대칭키로 암호화되어 저장됩니다.
 ```
 
-### Step 2. 법률 검색 설정 (선택사항)
+### Step 2. Legal Search Setup (Optional)
 
 국가법령정보센터 API 키를 등록하면 토론 중 실시간 판례 검색이 활성화됩니다.
 
-- API 키 발급: [법령정보 공동활용](https://www.law.go.kr/LSO/openApi.do)
+- API 키 발급: [법령정보 공동활용](https://open.law.go.kr/LSO/openApi.do)
 - 설정 화면에서 **법률 API** 섹션에 키를 입력합니다
 - 키 없이도 토론은 정상 진행되지만, Agent가 실제 판례를 인용하지 못합니다
 
-### Step 3. 토론 생성
+### Step 3. Create Debate
 
 **홈 화면**에서 토론을 생성합니다.
 
@@ -257,7 +257,7 @@ Release 버전에서는 server/data/settings.json 경로입니다.
 
 **생성** 버튼을 누르면 LLM이 상황을 분석하고 양 팀의 Agent 프로필을 자동 생성합니다.
 
-### Step 4. Agent 구성 확인
+### Step 4. Review Agent Setup
 
 생성된 Agent 프로필을 확인하고 필요시 편집합니다.
 
@@ -265,7 +265,7 @@ Release 버전에서는 server/data/settings.json 경로입니다.
 - 특정 Agent에 다른 LLM 모델을 지정할 수 있습니다 (Agent별 LLM 오버라이드)
 - **재생성** 버튼으로 프로필을 다시 생성할 수 있습니다
 
-### Step 5. 토론 실행 및 관찰
+### Step 5. Run & Observe Debate
 
 **시작** 버튼을 누르면 토론이 진행됩니다.
 
@@ -292,7 +292,7 @@ Team B 검색 → Team B 내부 토론 → Team B 반론
 | **연장** | 최대 라운드 수 추가 |
 | **중지** | 토론 즉시 종료 |
 
-### Step 6. 판결 확인 및 보고서
+### Step 6. Judgment & Report
 
 토론이 끝나면 m명의 심판(기본 3명)가 독립적으로 판결을 내립니다.
 
@@ -305,9 +305,9 @@ Team B 검색 → Team B 내부 토론 → Team B 반론
 
 Law-Nuri는 [국가법령정보센터](https://www.law.go.kr) OpenAPI를 통해 토론 중 실시간으로 법률 데이터를 검색합니다.
 
-**API 키 발급**: [법령정보 공동활용 신청](https://www.law.go.kr/LSO/openApi.do)
+**API 키 발급**: [법령정보 공동활용 신청](https://open.law.go.kr/LSO/openApi.do)
 
-### 지원 카테고리
+### Supported Categories
 
 | 카테고리 | 설명 |
 |---------|------|
@@ -326,7 +326,7 @@ Law-Nuri는 [국가법령정보센터](https://www.law.go.kr) OpenAPI를 통해 
 | **별표서식** | 법령 별표 및 서식 |
 | **위원회결정문** | 각종 위원회 결정문 |
 
-### 동작 방식
+### How It Works
 
 1. 토론 중 Agent가 현재 쟁점과 관련된 키워드로 법률 데이터를 자동 검색합니다
 2. 검색된 판례는 실제 사건번호(예: `2023다12345`)와 함께 인용됩니다
@@ -346,7 +346,7 @@ Law-Nuri는 [국가법령정보센터](https://www.law.go.kr) OpenAPI를 통해 
 
 ---
 
-## 아키텍처
+## Architecture
 
 ```
 Law-Nuri/
@@ -385,18 +385,18 @@ Law-Nuri/
 
 ---
 
-## 설정 관리
+## Configuration
 
 모든 설정은 앱의 **설정 화면**에서 관리합니다. 환경 변수나 설정 파일을 직접 편집할 필요가 없습니다.
 
-### 설정 파일 위치
+### Settings File Location
 
 | 배포 형태 | 경로 |
 |-----------|------|
 | Release (exe) | `server/data/settings.json` |
 | 소스 빌드 | `backend/data/settings.json` |
 
-### LLM Provider 설정
+### LLM Provider Setup
 
 설정 화면에서 Provider를 추가하고 관리합니다:
 
@@ -406,23 +406,13 @@ Law-Nuri/
 
 Custom Provider를 추가하면 OpenAI 호환 API를 제공하는 모든 서비스를 사용할 수 있습니다 (예: Ollama, LM Studio, Together AI).
 
-### 토론 파라미터
-
-| 설정 | 기본값 | 설명 |
-|------|-------|------|
-| 최소 라운드 | 2 | 심판가 조기 종료를 투표하기 위한 최소 라운드 |
-| 최대 라운드 | 5 | 토론이 자동 종료되는 최대 라운드 |
-| 내부 토론 횟수 | 2 | 팀 내 Agent 간 비공개 논의 횟수 |
-| 심판 질의 | 활성화 | 심판가 양 팀에 추가 질문을 할지 여부 |
-| 토론 언어 | 한국어 | Agent가 발언하는 언어 |
-
-### API 키 보안
+### API Key Security
 
 API 키는 평문으로 저장되지 않습니다. `cryptography` 패키지의 Fernet 대칭키 암호화를 사용하여 `settings.json`에 암호화된 형태로 저장됩니다. 암호화 키는 최초 실행 시 자동 생성됩니다.
 
 ---
 
-## 지원 LLM Provider
+## Supported LLM Providers
 
 | Provider | 모델 | 가격 (1M 토큰 기준) |
 |-----------|------|-------------------|
@@ -436,15 +426,7 @@ API 키는 평문으로 저장되지 않습니다. `cryptography` 패키지의 F
 
 ---
 
-## 기술 스택
-
-**백엔드**: Python 3.11+ · FastAPI · LangGraph · OpenAI SDK · aiosqlite · ChromaDB · httpx · fpdf2 · Pydantic · cryptography
-
-**프론트엔드**: Flutter 3.10+ · Riverpod · go_router · Dio · web_socket_channel · flutter_markdown
-
----
-
-## 주의사항
+## Notes
 
 - **LLM API 비용**: 토론마다 LLM API 호출이 발생합니다. 기본 구성(n=5) 기준 총 13개 Agent(5+5+3)가 라운드마다 발언하며, 팀 크기를 늘리면 호출 수도 비례해서 증가합니다. 5라운드 토론 기준 수십~수백 회의 API 호출이 발생할 수 있으니 사용량과 비용을 주의하세요.
 - **한국 법률 전용**: 국가법령정보센터 API는 대한민국 법률 데이터만 제공합니다. 다른 국가의 법률은 지원하지 않습니다.
