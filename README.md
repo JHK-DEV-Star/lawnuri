@@ -54,7 +54,7 @@
 
 ### Why Multi-Agent?
 
-Single LLM은 법률 질문에 대해 종종 **추상적인 원론(原論)으로 도피**하거나, **사실 관계를 임의로 왜곡**하거나, **존재하지 않는 판례를 그럴듯하게 지어내는** 문제를 보입니다. Law-Nuri는 이런 약점을 구조적으로 억제하기 위해 Multi-Agent를 채택했습니다. 서로 다른 Agent가 같은 쟁점을 독립적으로 검색·해석하고 팀 내부에서 상호 검증하면, 한 Agent의 모호한 답변이나 사실 왜곡이 다른 Agent의 reject·counter-argument에 걸려 필터링됩니다.
+Single LLM은 법률 질문에 대해 종종 **추상적인 원론으로 도피**하거나, **사실 관계를 임의로 왜곡**하거나, **존재하지 않는 판례를 그럴듯하게 지어내는** 문제를 보입니다. Law-Nuri는 이런 약점을 구조적으로 억제하기 위해 Multi-Agent를 채택했습니다. 서로 다른 Agent가 같은 쟁점을 독립적으로 검색·해석하고 팀 내부에서 상호 검증하면, 한 Agent의 모호한 답변이나 사실 왜곡이 다른 Agent의 reject·counter-argument에 걸려 필터링됩니다.
 
 - **Simulation을 통한 Insight 수집**: 토론이 진행되는 동안 쟁점과 관련된 판례·법령이 실시간으로 검색·인용·반박되고, 사용자는 그 전 과정을 관찰하며 법리적 맥락을 자연스럽게 축적
 - **대립 구조로 논리의 허점을 발견**: n:n Agent(기본 5:5)가 양쪽 입장에서 논쟁하면서, 한쪽만으로는 보이지 않는 법적 쟁점과 반론을 드러냄
@@ -223,11 +223,7 @@ Backend venv 생성 + 의존성 설치 + Flutter Package fetch 가 자동으로 
 3. **Test** 버튼으로 연결을 확인합니다
 4. 토론에 사용할 기본 Model을 선택합니다
 
-```
-설정은 backend/data/settings.json에 저장됩니다.
-Release 버전에서는 server/data/settings.json 경로입니다.
-모든 API 키는 Fernet 대칭키로 암호화되어 저장됩니다.
-```
+설정은 `backend/data/settings.json`에 저장됩니다. Release 버전에서는 `server/data/settings.json` 경로입니다. 모든 API 키는 Fernet 대칭키로 암호화되어 저장됩니다.
 
 ### Step 2. Legal Search Setup (Optional)
 
