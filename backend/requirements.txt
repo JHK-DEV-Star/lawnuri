@@ -1,0 +1,51 @@
+# ===========================================
+# LawNuri Backend Dependencies
+# ===========================================
+# Python 3.11+ required
+# Install: pip install -r requirements.txt
+# ===========================================
+
+# ============= Core Framework =============
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+python-multipart>=0.0.12
+
+# ============= LLM =============
+# OpenAI SDK (unified OpenAI-compatible format for all providers)
+openai>=1.0.0
+
+# ============= LangGraph =============
+langgraph>=0.2.0
+langgraph-checkpoint-sqlite>=2.0.0
+
+# ============= Database =============
+# Async SQLite (primary storage)
+aiosqlite>=0.20.0
+
+# ============= GraphRAG =============
+# Vector store (legacy, being replaced by SQLite)
+chromadb>=0.5.0
+# Graph store (legacy, being replaced by SQLite)
+networkx>=3.0
+
+# ============= File Processing =============
+PyMuPDF>=1.24.0
+# Encoding detection (support non-UTF-8 text files)
+charset-normalizer>=3.0.0
+chardet>=5.0.0
+
+# ============= PDF Generation =============
+fpdf2>=2.7.0
+
+# ============= Data Validation =============
+pydantic>=2.0.0
+
+# ============= Utilities =============
+# Environment variable loading
+python-dotenv>=1.0.0
+# HTTP client for external APIs
+httpx>=0.27.0
+# Cryptography for settings encryption
+cryptography>=43.0.0
+# Google Gen AI SDK (Gemini + Vertex AI)
+google-genai>=1.0.0

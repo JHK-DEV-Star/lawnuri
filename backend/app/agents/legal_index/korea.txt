@@ -1,0 +1,169 @@
+# Korean Legal System Reference
+# Use this index to plan accurate legal searches.
+# Search the law.go.kr API using Korean terms shown in parentheses.
+
+## 1. CIVIL LAW (민사법)
+
+### Civil Act (민법)
+- General Provisions (총칙): Legal capacity, Juridical acts, Agency, Prescription
+  Art.1~184
+- Property Rights (물권): Ownership(Art.211), Possession(Art.192), Mortgage(Art.356)
+  Art.185~372
+- Obligations (채권):
+  - Contracts General: Art.527~692
+  - Sale(매매 Art.563), Lease(임대차 Art.618), Mandate(위임 Art.680)
+  - Torts/Damages(불법행위): Art.750(general tort), Art.751(non-pecuniary),
+    Art.756(employer liability), Art.758(structure liability)
+  - Unjust Enrichment(부당이득): Art.741~749
+- Family (친족): Marriage(Art.807), Divorce(Art.834), Parental authority(Art.909)
+  Art.767~996
+- Succession (상속): Inheritance(Art.997), Will(Art.1060), Forced share(Art.1112)
+  Art.997~1118
+
+### Civil Procedure Act (민사소송법): Filing suits, Evidence, Judgment
+### Civil Execution Act (민사집행법): Enforcement, Seizure, Auction
+
+### Special Civil Laws:
+- Housing Lease Protection Act (주택임대차보호법): Tenant protection, Deposit priority
+- Commercial Building Lease Protection Act (상가건물임대차보호법)
+- Act on Special Cases Concerning Expedition of Legal Proceedings (소액사건심판법)
+- Consumer Protection Act (소비자기본법)
+- Electronic Commerce Act (전자상거래법): Online transactions, Withdrawal rights
+- Product Liability Act (제조물책임법)
+
+## 2. CRIMINAL LAW (형사법)
+
+### Criminal Act (형법)
+- General Provisions (총칙): Elements of crime, Justification, Attempt, Complicity
+  Art.1~86
+- Specific Crimes (각칙):
+  - Homicide(살인 Art.250), Injury(상해 Art.257), Assault(폭행 Art.260)
+  - Kidnapping(약취유인 Art.287), Rape/Sexual assault(강간 Art.297)
+  - Defamation(명예훼손 Art.307), Insult(모욕 Art.311)
+  - Fraud(사기 Art.347), Embezzlement(횡령 Art.355), Breach of trust(배임 Art.355②)
+  - Theft(절도 Art.329), Robbery(강도 Art.333)
+  - Arson(방화 Art.164), Trespass(주거침입 Art.319)
+  - Bribery(뇌물 Art.129), Abuse of authority(직권남용 Art.123)
+  - Forgery(문서위조 Art.231)
+
+### Criminal Procedure Act (형사소송법): Investigation, Prosecution, Trial
+### Special Criminal Laws:
+- Act on Special Cases Concerning Punishment of Sexual Crimes (성폭력처벌법)
+- Act on Prevention of Domestic Violence (가정폭력처벌법)
+- Stalking Punishment Act (스토킹처벌법)
+- Act on Aggravated Punishment of Specific Crimes (특정범죄가중처벌법)
+- Act on Punishment of Narcotics (마약류관리법)
+- Road Traffic Act (도로교통법): DUI, Traffic violations
+
+## 3. COMMERCIAL LAW (상사법)
+
+### Commercial Act (상법)
+- Commercial Transactions: Art.46~168
+- Companies (회사):
+  - Stock corporation(주식회사 Art.288), LLC(유한회사 Art.543)
+  - Directors' duties(Art.382), Shareholders' rights(Art.363)
+  - M&A, Dissolution
+- Insurance (보험): Art.638~739
+- Maritime (해상): Art.740~932
+
+### Special Commercial Laws:
+- Financial Investment Services Act (자본시장법): Securities, Investment
+- Fair Trade Act (공정거래법): Monopoly, Unfair practices
+- Bankruptcy Act (채무자회생법): Rehabilitation, Bankruptcy
+- Check/Bill Act (어음법, 수표법)
+
+## 4. ADMINISTRATIVE LAW (행정법)
+
+### Administrative Procedure Act (행정절차법): Notice, Hearing, Disposition
+### Administrative Litigation Act (행정소송법): Revocation suits, Appeal
+### Administrative Appeals Act (행정심판법)
+### National Compensation Act (국가배상법): Government tort liability
+
+### Special Administrative Laws:
+- Building Act (건축법)
+- National Land Planning Act (국토계획법)
+- Environmental Impact Assessment Act (환경영향평가법)
+- Food Sanitation Act (식품위생법)
+- Medical Service Act (의료법)
+- Pharmaceutical Affairs Act (약사법)
+
+## 5. LABOR LAW (노동법)
+
+### Labor Standards Act (근로기준법)
+- Unfair dismissal(부당해고 Art.23), Wages(임금 Art.43)
+- Working hours(근로시간 Art.50), Overtime(연장근로 Art.53)
+- Retirement allowance(퇴직급여 Art.34)
+### Trade Union Act (노동조합법): Union rights, Collective bargaining, Strikes
+### Industrial Accident Compensation Act (산업재해보상보험법)
+### Employment Insurance Act (고용보험법)
+### Minimum Wage Act (최저임금법)
+### Equal Employment Act (남녀고용평등법): Discrimination, Sexual harassment
+
+## 6. INTELLECTUAL PROPERTY (지식재산권법)
+
+### Patent Act (특허법): Inventions, Patent registration
+### Trademark Act (상표법): Trademark registration, Infringement
+### Copyright Act (저작권법): Author's rights, Fair use, Digital rights
+### Design Protection Act (디자인보호법)
+### Unfair Competition Prevention Act (부정경쟁방지법): Trade secrets
+
+## 7. TAX LAW (세법)
+
+### Framework Act on National Taxes (국세기본법)
+### Income Tax Act (소득세법)
+### Corporate Tax Act (법인세법)
+### Value-Added Tax Act (부가가치세법)
+### Inheritance/Gift Tax Act (상속세및증여세법)
+### Local Tax Act (지방세법)
+
+## 8. CONSTITUTIONAL LAW (헌법)
+
+### Constitution of Korea (대한민국헌법)
+- Basic rights: Art.10~39 (dignity, equality, freedom, property)
+- Government structure: Art.40~130
+### Constitutional Court Act (헌법재판소법): Constitutional complaints, Review
+
+## 9. FAMILY LAW (가족법)
+
+### Family Litigation Act (가사소송법)
+### Act on Registration of Family Relations (가족관계등록법)
+### Child Welfare Act (아동복지법)
+### Act on Special Cases Concerning Adoption (입양특례법)
+
+## 10. REAL ESTATE LAW (부동산법)
+
+### Registration of Real Estate Act (부동산등기법)
+### Real Estate Transaction Reporting Act (부동산거래신고법)
+### Housing Act (주택법)
+### Land Compensation Act (토지보상법)
+### Aggregate Real Estate Tax Act (종합부동산세법)
+
+## 11. IT / DATA LAW (정보통신법)
+
+### Personal Information Protection Act (개인정보보호법): PIPA
+### Information and Communications Network Act (정보통신망법)
+### Electronic Signatures Act (전자서명법)
+### Act on Promotion of AI Industry (인공지능산업육성법)
+
+## 12. INTERNATIONAL LAW (국제법)
+
+### Private International Law Act (국제사법): Conflict of laws
+### Arbitration Act (중재법): International arbitration
+### Foreign Trade Act (대외무역법)
+
+---
+
+## SEARCH STRATEGY BY TOPIC
+
+| Topic | Primary Statute | Related Laws | Precedent Filter |
+|-------|----------------|--------------|-----------------|
+| Contract dispute | 민법 채권편 | 소비자기본법, 전자상거래법 | jo=민법 |
+| Defamation | 형법 Art.307 + 민법 Art.750 | 언론중재법 | query=명예훼손 |
+| Real estate | 민법 물권편 | 부동산등기법, 주택임대차보호법 | jo=민법 |
+| Labor dispute | 근로기준법 | 노동조합법, 고용보험법 | jo=근로기준법 |
+| Family dispute | 민법 친족/상속편 | 가사소송법 | jo=민법 |
+| Corporate dispute | 상법 회사편 | 자본시장법, 공정거래법 | jo=상법 |
+| Admin action | 행정절차법 | 행정소송법, 개별법 | query=행정처분 |
+| IP infringement | 특허법/저작권법/상표법 | 부정경쟁방지법 | jo=특허법 |
+| Tax dispute | 국세기본법 | 소득세법/법인세법 | jo=국세기본법 |
+| Privacy/Data | 개인정보보호법 | 정보통신망법 | jo=개인정보 |
