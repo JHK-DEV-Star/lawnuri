@@ -7,9 +7,7 @@
 *실제 판례와 법률 논리를 기반으로 한 Multi-Agent 법정 시뮬레이션*
 
 <p>
-<a href="https://github.com/USER/Law-Nuri/stargazers"><img src="https://img.shields.io/github/stars/USER/Law-Nuri?style=flat-square&color=DAA520" alt="GitHub Stars"></a>
-<a href="https://github.com/USER/Law-Nuri/network"><img src="https://img.shields.io/github/forks/USER/Law-Nuri?style=flat-square" alt="GitHub Forks"></a>
-<a href="https://github.com/USER/Law-Nuri/releases"><img src="https://img.shields.io/github/v/release/USER/Law-Nuri?style=flat-square&color=blue" alt="Release"></a>
+<a href="https://github.com/JHK-DEV-Star/lawnuri/releases/tag/v1.0.0"><img src="https://img.shields.io/github/v/release/JHK-DEV-Star/lawnuri?style=flat-square&color=blue" alt="Release"></a>
 <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
 <img src="https://img.shields.io/badge/Flutter-3.10+-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter">
 <img src="https://img.shields.io/badge/FastAPI-0.115+-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
@@ -21,7 +19,7 @@
 <a href="#-사용-가이드">사용 가이드</a> •
 <a href="#-국가법령정보센터-openapi">법률 API</a> •
 <a href="#-아키텍처">아키텍처</a> •
-<a href="#-지원-llm-프로바이더">LLM 프로바이더</a>
+<a href="#-지원-llm-provider">LLM Provider</a>
 </p>
 
 </div>
@@ -39,13 +37,13 @@
 > **출력**: 실제 판례에 근거한 대립 토론, 판례별 인용·리뷰·거부 기록, 심판별 판결 및 점수, PDF 보고서
 
 <div align="center">
-<img src="img/screen_shot_1.png" alt="홈 화면" width="80%">
-<p><em>상황 입력 및 토론 생성 화면</em></p>
+<img src="img/screen_shot_1.png" alt="홈 화면" width="700">
+<br><sub><i>상황 입력 및 토론 생성 화면</i></sub>
 </div>
 
 <div align="center">
-<img src="img/screen_shot_1_2.png" alt="상황 분석" width="80%">
-<p><em>AI 상황 분석 결과 — 쟁점 정리, 관련 법률 도출, 양측 입장 구성</em></p>
+<img src="img/screen_shot_1_2.png" alt="상황 분석" width="700">
+<br><sub><i>AI 상황 분석 결과 — 쟁점 정리, 관련 법률 도출, 양측 입장 구성</i></sub>
 </div>
 
 ### 동작 원리
@@ -81,13 +79,13 @@
 - **심판 질의응답** — 심판 Agent가 토론 도중 양 팀에 질문하여 논증의 근거를 검증
 
 <div align="center">
-<img src="img/screen_shot_2.png" alt="에이전트 구성 및 편집" width="80%">
-<p><em>에이전트 편집 — 전문분야, 성격, 토론 스타일, LLM 모델 오버라이드</em></p>
+<img src="img/screen_shot_2.png" alt="Agent 구성 및 편집" width="700">
+<br><sub><i>Agent 편집 — 전문분야, 성격, 토론 스타일, LLM 모델 오버라이드</i></sub>
 </div>
 
 <div align="center">
-<img src="img/screen_shot_2_2.png" alt="에이전트 목록" width="80%">
-<p><em>에이전트 목록 — 팀 A, 팀 B, 심판별 이름과 전문분야</em></p>
+<img src="img/screen_shot_2_2.png" alt="Agent 목록" width="420">
+<br><sub><i>Agent 목록 — 팀 A, 팀 B, 심판별 이름과 전문분야</i></sub>
 </div>
 
 ### 판례 기반 법률 검색 (RAG)
@@ -107,18 +105,18 @@
 - **상태 영속성** — LangGraph 체크포인터가 매 단계마다 상태 저장; 서버 재시작 후에도 재개 가능
 
 <div align="center">
-<img src="img/screen_shot_3.png" alt="토론 진행" width="80%">
-<p><em>실시간 토론 진행 화면 — 라운드별 발언, 내부 토론, 증거 인용 추적</em></p>
+<img src="img/screen_shot_3.png" alt="토론 진행" width="700">
+<br><sub><i>실시간 토론 진행 화면 — 라운드별 발언, 내부 토론, 증거 인용 추적</i></sub>
 </div>
 
 <div align="center">
-<img src="img/screen_shot_8.png" alt="라운드 연장" width="80%">
-<p><em>라운드 연장 — 토론 완료 후 추가 라운드를 부여하여 논의 계속</em></p>
+<img src="img/screen_shot_8.png" alt="라운드 연장" width="700">
+<br><sub><i>라운드 연장 — 토론 완료 후 추가 라운드를 부여하여 논의 계속</i></sub>
 </div>
 
 <div align="center">
-<img src="img/screen_shot_9.png" alt="내부 토론" width="80%">
-<p><em>팀 내부 토론 — 판례 검증 투표(ACCEPT/REJECT/REVIEW_MORE), 전략 논의, 리뷰 큐</em></p>
+<img src="img/screen_shot_9.png" alt="내부 토론" width="420">
+<br><sub><i>팀 내부 토론 — 판례 검증 투표(ACCEPT/REJECT/REVIEW_MORE), 전략 논의, 리뷰 큐</i></sub>
 </div>
 
 ### 보고서 및 시각화
@@ -133,17 +131,17 @@
   - **라운드별 요약** — 라운드별 핵심 발언과 전략 변화
   - **권고사항** — AI가 도출한 법적 권고와 유의사항
   - **토론 기록** — 전체 발언, 내부 토론, 투표 기록 원문
-- **인터랙티브 graph** — 에이전트 관계, 반론, 증거 흐름을 보여주는 Force-Directed 토론 graph
+- **인터랙티브 graph** — Agent 관계, 반론, 증거 흐름을 보여주는 Force-Directed 토론 graph
 - **실시간 업데이트** — WebSocket을 통해 모든 토론 이벤트를 UI에 스트리밍
 
 <div align="center">
-<img src="img/screen_shot_7.png" alt="보고서" width="80%">
-<p><em>PDF 보고서 — 상황 분석, 종합 요약, 핵심 증거, 심판 판결, 논증 분석 등 9개 섹션</em></p>
+<img src="img/screen_shot_7.png" alt="보고서" width="700">
+<br><sub><i>PDF 보고서 — 상황 분석, 종합 요약, 핵심 증거, 심판 판결, 논증 분석 등 9개 섹션</i></sub>
 </div>
 
 <div align="center">
-<img src="img/screen_shot_4.png" alt="토론 graph" width="80%">
-<p><em>Force-Directed 토론 graph — 에이전트 간 관계 및 증거 흐름 시각화</em></p>
+<img src="img/screen_shot_4.png" alt="토론 graph" width="600">
+<br><sub><i>Force-Directed 토론 graph — Agent 간 관계 및 증거 흐름 시각화</i></sub>
 </div>
 
 ### 판결 및 점수
@@ -154,20 +152,20 @@
 - **상세 판결문** — 실제 판례를 참조한 사법적 의견서 형식의 구조화된 판결 이유 제공
 
 <div align="center">
-<img src="img/screen_shot_5.png" alt="판결 및 점수" width="80%">
-<p><em>심판별 판결 결과 — 점수, 결정적 증거, 판결 이유</em></p>
+<img src="img/screen_shot_5.png" alt="판결 및 점수" width="700">
+<br><sub><i>심판별 판결 결과 — 점수, 결정적 증거, 판결 이유</i></sub>
 </div>
 
-### 멀티 프로바이더 LLM 지원
+### Multi-Provider LLM 지원
 
-- **5개 프로바이더** — OpenAI, Google Gemini, Anthropic, Vertex AI, Custom (OpenAI 호환)
+- **5개 Provider** — OpenAI, Google Gemini, Anthropic, Vertex AI, Custom (OpenAI 호환)
 - **암호화된 API 키** — Fernet 암호화로 자격증명 안전 저장
 - **비용 추적** — 설정 화면에서 모델별 가격 표시
-- **연결 테스트** — 원클릭 프로바이더 연결 확인
+- **연결 테스트** — 원클릭 Provider 연결 확인
 
 <div align="center">
-<img src="img/screen_shot_6.png" alt="설정" width="80%">
-<p><em>LLM 프로바이더 설정 — API 키 관리, 모델 선택, 연결 테스트</em></p>
+<img src="img/screen_shot_6.png" alt="설정" width="700">
+<br><sub><i>LLM Provider 설정 — API 키 관리, 모델 선택, 연결 테스트</i></sub>
 </div>
 
 ### 다국어 지원
@@ -180,7 +178,7 @@
 
 ### Release 다운로드 (권장)
 
-[다운로드]()에서 최신 버전의 `LawNuri.zip`을 다운로드합니다.
+[다운로드](https://github.com/JHK-DEV-Star/lawnuri/releases/tag/v1.0.0)에서 최신 버전의 `LawNuri.zip`을 다운로드합니다.
 
 ```
 LawNuri.zip을 압축 해제하면:
@@ -216,11 +214,11 @@ setup.bat
 
 ## 사용 가이드
 
-### Step 1. LLM 프로바이더 설정
+### Step 1. LLM Provider 설정
 
 앱을 처음 실행하면 **설정** 화면으로 이동합니다.
 
-1. 사용할 LLM 프로바이더를 선택합니다 (OpenAI, Gemini, Anthropic, Vertex AI, Custom)
+1. 사용할 LLM Provider를 선택합니다 (OpenAI, Gemini, Anthropic, Vertex AI, Custom)
 2. API 키를 입력합니다 — 키는 Fernet 암호화로 로컬에 저장됩니다
 3. **테스트** 버튼으로 연결을 확인합니다
 4. 토론에 사용할 기본 모델을 선택합니다
@@ -259,7 +257,7 @@ Release 버전에서는 server/data/settings.json 경로입니다.
 
 **생성** 버튼을 누르면 LLM이 상황을 분석하고 양 팀의 Agent 프로필을 자동 생성합니다.
 
-### Step 4. 에이전트 구성 확인
+### Step 4. Agent 구성 확인
 
 생성된 Agent 프로필을 확인하고 필요시 편집합니다.
 
@@ -342,8 +340,8 @@ Law-Nuri는 [국가법령정보센터](https://www.law.go.kr) OpenAPI를 통해 
 ## Workflow
 
 <div align="center">
-<img src="img/workflow.png" alt="Law-Nuri Workflow" width="90%">
-<p><em>End-to-end pipeline: Input → Analysis → Agent Generation → Debate Rounds → Final Judgment → Report</em></p>
+<img src="img/workflow.png" alt="Law-Nuri Workflow" width="800">
+<br><sub><i>End-to-end pipeline: Input → Analysis → Agent Generation → Debate Rounds → Final Judgment → Report</i></sub>
 </div>
 
 ---
@@ -381,7 +379,7 @@ Law-Nuri/
 | 오케스트레이션 | LangGraph (Agent 상태 머신) |
 | 데이터베이스 | SQLite (aiosqlite) |
 | 벡터 저장소 | ChromaDB / SQLite |
-| LLM 인터페이스 | OpenAI SDK (멀티 프로바이더) |
+| LLM 인터페이스 | OpenAI SDK (Multi-Provider) |
 | PDF 생성 | fpdf2 |
 | 실시간 통신 | WebSocket |
 
@@ -398,15 +396,15 @@ Law-Nuri/
 | Release (exe) | `server/data/settings.json` |
 | 소스 빌드 | `backend/data/settings.json` |
 
-### LLM 프로바이더 설정
+### LLM Provider 설정
 
-설정 화면에서 프로바이더를 추가하고 관리합니다:
+설정 화면에서 Provider를 추가하고 관리합니다:
 
-1. 프로바이더 선택 (OpenAI, Gemini, Anthropic, Vertex AI)
+1. Provider 선택 (OpenAI, Gemini, Anthropic, Vertex AI)
 2. API 키 입력 → **테스트** 버튼으로 연결 확인
 3. 사용할 모델 선택
 
-Custom 프로바이더를 추가하면 OpenAI 호환 API를 제공하는 모든 서비스를 사용할 수 있습니다 (예: Ollama, LM Studio, Together AI).
+Custom Provider를 추가하면 OpenAI 호환 API를 제공하는 모든 서비스를 사용할 수 있습니다 (예: Ollama, LM Studio, Together AI).
 
 ### 토론 파라미터
 
@@ -424,9 +422,9 @@ API 키는 평문으로 저장되지 않습니다. `cryptography` 패키지의 F
 
 ---
 
-## 지원 LLM 프로바이더
+## 지원 LLM Provider
 
-| 프로바이더 | 모델 | 가격 (1M 토큰 기준) |
+| Provider | 모델 | 가격 (1M 토큰 기준) |
 |-----------|------|-------------------|
 | **OpenAI** | GPT-5.4, GPT-4.1, GPT-4o, o3, o4-mini | $0.10 ~ $15.00 |
 | **Gemini** | gemini-3.1-pro, gemini-2.5-flash, gemini-2.0-flash | $0.10 ~ $12.00 |
@@ -434,7 +432,7 @@ API 키는 평문으로 저장되지 않습니다. `cryptography` 패키지의 F
 | **Vertex AI** | Google Cloud를 통한 Gemini 모델 | $0.10 ~ $12.00 |
 | **Custom** | OpenAI 호환 엔드포인트 | 사용자 정의 |
 
-모든 프로바이더는 설정 UI에서 구성합니다. API 키는 암호화되어 저장됩니다.
+모든 Provider는 설정 UI에서 구성합니다. API 키는 암호화되어 저장됩니다.
 
 ---
 
@@ -455,8 +453,6 @@ API 키는 평문으로 저장되지 않습니다. `cryptography` 패키지의 F
 
 ---
 
-<div align="center">
+## License
 
-LangGraph, FastAPI, Flutter로 제작되었습니다
-
-</div>
+이 프로젝트는 [Apache License 2.0](LICENSE) 하에 배포됩니다.
