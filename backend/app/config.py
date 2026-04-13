@@ -31,11 +31,6 @@ class Config:
 
     DB_BACKEND: str = os.getenv("DB_BACKEND", "sqlite")
     DB_PATH: str = os.path.join(_base_dir, 'data', 'lawnuri.db')
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL",
-        "postgresql+asyncpg://lawnuri:lawnuri@localhost:5432/lawnuri",
-    )
-
     MAX_CONTENT_LENGTH: int = 50 * 1024 * 1024  # 50MB
     ALLOWED_EXTENSIONS: set = {'pdf', 'md', 'txt', 'markdown'}
 
