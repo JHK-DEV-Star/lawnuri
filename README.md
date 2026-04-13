@@ -7,7 +7,7 @@
 *실제 판례와 법률 논리를 기반으로 한 Multi-Agent 법정 Simulation*
 
 <p>
-<a href="https://github.com/JHK-DEV-Star/lawnuri/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/Release-v1.0.0-blue?style=flat-square" alt="Release"></a>
+<a href="https://github.com/JHK-DEV-Star/lawnuri/releases/tag/v1.0.1"><img src="https://img.shields.io/badge/Release-v1.0.1-blue?style=flat-square" alt="Release"></a>
 <img src="https://img.shields.io/badge/Python-3.11+-3776AB?style=flat-square&logo=python&logoColor=white" alt="Python">
 <img src="https://img.shields.io/badge/Flutter-3.10+-02569B?style=flat-square&logo=flutter&logoColor=white" alt="Flutter">
 <img src="https://img.shields.io/badge/FastAPI-0.115+-009688?style=flat-square&logo=fastapi&logoColor=white" alt="FastAPI">
@@ -178,7 +178,7 @@ Single LLM은 법률 질문에 대해 종종 **추상적인 원론으로 도피*
 
 ### Download Release (Recommended)
 
-[Download](https://github.com/JHK-DEV-Star/lawnuri/releases/tag/v1.0.0)에서 최신 버전의 `LawNuri.zip`을 Download합니다.
+[Download](https://github.com/JHK-DEV-Star/lawnuri/releases/tag/v1.0.1)에서 최신 버전의 `LawNuri.zip`을 Download합니다.
 
 ```
 LawNuri.zip을 압축 해제하면:
