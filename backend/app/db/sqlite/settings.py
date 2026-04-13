@@ -60,7 +60,7 @@ class SQLiteSettingsRepo(BaseSettingsRepo):
             db: Active aiosqlite connection.
             data: The complete settings dictionary to store.
         """
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now().isoformat()
         json_data = json.dumps(data, ensure_ascii=False)
 
         try:

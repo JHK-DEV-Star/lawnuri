@@ -95,7 +95,7 @@ Single LLM은 법률 질문에 대해 종종 **추상적인 원론으로 도피*
 - **문서 Upload** — PDF/TXT/MD 파일을 추가 증거로 Upload
 - **Vector 검색** — Embedding 기반 의미 검색으로 판례, 법령, 증거를 탐색
 - **지식 graph** — Entity/관계 추출을 통한 구조화된 법률 추론
-- **허위 인용 탐지** — 존재하지 않는 판례번호를 자동 감지하고 증거 점수에 Penalty 부여
+- **허위 인용 탐지** — 존재하지 않는 판례번호를 자동 감지하고, 심판 Agent가 평가 시 감점 반영
 
 ### Debate Control
 
@@ -420,6 +420,12 @@ Custom Provider를 추가하면 OpenAI 호환 API를 제공하는 모든 Service
 - **한국 법률 전용**: 국가법령정보센터 API는 대한민국 법률 Data만 제공합니다. 다른 국가의 법률은 지원하지 않습니다.
 - **Windows Release**: Release 실행 파일은 현재 Windows 전용입니다. macOS/Linux는 소스에서 빌드해야 합니다.
 - **Server 종료 시**: Server가 종료되면 진행 중인 토론은 자동으로 `stopped` 상태로 변경됩니다.
+
+---
+
+## Disclaimer
+
+Law-Nuri는 AI 기반 법률 토론 Simulation 도구이며, **법률 자문이나 법적 조언을 제공하지 않습니다.** 본 프로그램의 출력물(토론 내용, 판결, 보고서 등)은 AI Agent가 생성한 것으로, 실제 법률 전문가의 판단을 대체할 수 없습니다. 법적 분쟁이나 의사결정에는 반드시 자격을 갖춘 법률 전문가와 상담하시기 바랍니다.
 
 ---
 

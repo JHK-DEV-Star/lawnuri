@@ -253,7 +253,7 @@ Output ONLY valid JSON with the following structure:
             })
     report["evidence_items"] = evidence_items
 
-    report["generated_at"] = datetime.now(timezone.utc).isoformat()
+    report["generated_at"] = datetime.now().isoformat()
     report["debate_id"] = state.get("debate_id", "")
     report["topic"] = state.get("analysis", {}).get("topic", "")
 

@@ -29,7 +29,7 @@ class SQLiteDebateRepo(BaseDebateRepo):
     @staticmethod
     def _now_iso() -> str:
         """Return the current UTC time as an ISO 8601 string."""
-        return datetime.now(timezone.utc).isoformat()
+        return datetime.now().isoformat()
 
     @staticmethod
     def _row_to_state(row: aiosqlite.Row) -> dict:

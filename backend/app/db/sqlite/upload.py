@@ -71,7 +71,7 @@ class SQLiteUploadRepo(BaseUploadRepo):
             generated ``doc_id`` and ``uploaded_at`` timestamp.
         """
         doc_id = str(uuid.uuid4())
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now().isoformat()
         mime_type = self._mime_from_filename(filename)
 
         try:

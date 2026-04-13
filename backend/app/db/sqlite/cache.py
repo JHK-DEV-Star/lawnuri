@@ -78,7 +78,7 @@ class SQLiteCacheRepo(BaseCacheRepo):
             cache_key: The cache entry key.
             data: Any JSON-serializable value.
         """
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now().isoformat()
         data_json = json.dumps(data, ensure_ascii=False, default=str)
 
         try:
@@ -188,7 +188,7 @@ class SQLiteAnonymizationRepo(BaseAnonymizationRepo):
             debate_id: Owning debate identifier.
             mapping: The complete ``{token: original_value}`` dict.
         """
-        now = datetime.now(timezone.utc).isoformat()
+        now = datetime.now().isoformat()
         mapping_json = json.dumps(mapping, ensure_ascii=False)
 
         try:

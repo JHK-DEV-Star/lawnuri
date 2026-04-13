@@ -149,7 +149,7 @@ async def _team_speak_wrapper(
             pass
 
     # Snapshot timing and token usage before subgraph execution
-    _round_start = datetime.now(timezone.utc)
+    _round_start = datetime.now()
     _tokens_before = llm_client.usage_summary
 
     # Run the 4-node team subgraph
@@ -178,7 +178,7 @@ async def _team_speak_wrapper(
     evidence_list = team_state.get("output_evidence", [])
 
     # Build debate log entry (include internal_discussion for frontend display)
-    _now = datetime.now(timezone.utc)
+    _now = datetime.now()
     _tokens_after = llm_client.usage_summary
     debate_log_entry = {
         "team": current_team,

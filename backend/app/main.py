@@ -94,7 +94,7 @@ async def lifespan(app: FastAPI):
                 if state.get("status") in ("running", "paused"):
                     state["status"] = "stopped"
                     from datetime import datetime, timezone
-                    state["updated_at"] = datetime.now(timezone.utc).isoformat()
+                    state["updated_at"] = datetime.now().isoformat()
                     with open(state_path, "w", encoding="utf-8") as f:
                         json.dump(state, f, ensure_ascii=False, indent=2, default=str)
                     logger.info("Stopped running debate %s on shutdown", entry)

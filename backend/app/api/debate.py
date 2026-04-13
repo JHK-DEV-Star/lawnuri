@@ -111,7 +111,7 @@ class DebateStore:
         """Load state, merge kwargs, save, and return the updated state."""
         state = DebateStore.load(debate_id)
         state.update(kwargs)
-        state["updated_at"] = datetime.now(timezone.utc).isoformat()
+        state["updated_at"] = datetime.now().isoformat()
         DebateStore.save(debate_id, state)
         return state
 
@@ -189,7 +189,7 @@ class DebateStore:
         """Load state, merge kwargs, save to both stores, return updated state."""
         state = await DebateStore.aload(debate_id)
         state.update(kwargs)
-        state["updated_at"] = datetime.now(timezone.utc).isoformat()
+        state["updated_at"] = datetime.now().isoformat()
         await DebateStore.asave(debate_id, state)
         return state
 
@@ -453,7 +453,7 @@ async def _run_debate(debate_id: str, task_id: str, graph: Any, initial_state: d
                 await broadcast(debate_id, {
                     "type": "node_complete",
                     "node": node_name,
-                    "timestamp": _dt.datetime.now(_dt.timezone.utc).isoformat(),
+                    "timestamp": _dt.datetime.now().isoformat(),
                 })
 
         if _was_interrupted:
@@ -630,7 +630,7 @@ async def delete_debate(debate_id: str):
 async def create_debate(body: DebateCreate):
     """Create a new debate session and return the debate_id."""
     debate_id = str(uuid.uuid4())
-    now = datetime.now(timezone.utc).isoformat()
+    now = datetime.now().isoformat()
 
     settings = await aload_settings()
     debate_settings = settings.get("debate", {})
@@ -1732,7 +1732,7 @@ async def interrupt_debate(debate_id: str, body: InterruptBody):
         "target_team": body.target_team,
         "content": body.content,
         "type": body.type,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": datetime.now().isoformat(),
     }
 
     # Write to state so the graph picks it up on the next iteration
