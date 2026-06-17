@@ -66,15 +66,10 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
 
-  # Generates the Windows app icon (taskbar/window/exe) from a single PNG.
-  flutter_launcher_icons: ^0.14.1
-
-# App icon generation config (run: dart run flutter_launcher_icons)
-flutter_launcher_icons:
-  windows:
-    generate: true
-    image_path: "assets/logo.png"
-    icon_size: 256
+# NOTE: The Windows app icon (app_icon.ico) is generated as a MULTI-resolution
+# .ico by tools/gen_app_icon.py (Pillow). flutter_launcher_icons is intentionally
+# NOT used — it only emits a single-resolution Windows icon, which Windows fails
+# to render at small sizes (falls back to the default icon).
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

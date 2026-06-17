@@ -13,6 +13,8 @@ APP_DIR = os.path.join(BACKEND_DIR, 'app')
 
 # --- Hidden imports that PyInstaller cannot auto-detect ---
 hiddenimports = [
+    # python-docx for 소장 Word export (lazy `import docx` inside functions)
+    'docx',
     # FastAPI / Starlette
     'uvicorn.logging',
     'uvicorn.loops',

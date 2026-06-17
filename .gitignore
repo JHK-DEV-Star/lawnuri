@@ -16,6 +16,11 @@ backend/data/*
 !backend/data/templates/*.json
 backend/logs/
 
+# Build artifacts (PyInstaller + release staging)
+backend/build/
+backend/dist/
+dist/
+
 # Flutter
 app/.dart_tool/
 app/build/
