@@ -20,10 +20,20 @@ async def lifespan(app: FastAPI):
     data_dirs = [
         Path(config.DATA_DIR),
         Path(config.UPLOADS_DIR),
+        Path(config.TEMPLATES_DIR),
     ]
     for d in data_dirs:
         d.mkdir(parents=True, exist_ok=True)
         logger.debug("Ensured directory exists: %s", d)
+
+    # Warm-load complaint (소장) templates so the catalog is ready for the
+    # analyze phase. Failure here must not block startup.
+    try:
+        from app.utils.template_loader import get_template_loader
+        n = get_template_loader().load_all()
+        logger.info("Loaded %d complaint template(s).", n)
+    except Exception as exc:
+        logger.warning("Template load failed: %s", exc)
 
     # Initialize database (SQLite / PostgreSQL)
     try:

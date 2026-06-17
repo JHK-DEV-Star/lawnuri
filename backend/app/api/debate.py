@@ -513,6 +513,20 @@ async def _run_debate(debate_id: str, task_id: str, graph: Any, initial_state: d
         state["current_team"] = final_state.get("current_team", "team_a")
         state["judge_improvement_feedback"] = final_state.get("judge_improvement_feedback", {})
 
+        # Complaint mode: persist synthesis outputs (else they are dropped and
+        # disappear from the report). LangGraph only returns changed keys, so
+        # fall back to the previously-saved value when absent.
+        state["mode"] = final_state.get("mode", state.get("mode", "debate"))
+        state["selected_template"] = final_state.get(
+            "selected_template", state.get("selected_template", {})
+        )
+        state["complaint_analysis"] = final_state.get(
+            "complaint_analysis", state.get("complaint_analysis", {})
+        )
+        state["drafted_complaint"] = final_state.get(
+            "drafted_complaint", state.get("drafted_complaint", "")
+        )
+
         # Determine final status
         graph_status = final_state.get("status", "completed")
         if graph_status == "paused":
@@ -635,15 +649,28 @@ async def create_debate(body: DebateCreate):
     settings = await aload_settings()
     debate_settings = settings.get("debate", {})
 
+    # Complaint mode: fixed round count from complaint settings (default 3),
+    # so the debate-over-소장-validity runs a bounded number of rounds.
+    mode = getattr(body, "mode", "debate") or "debate"
+    if mode == "complaint":
+        complaint_settings = settings.get("complaint", {})
+        _rounds = int(complaint_settings.get("rounds", 3))
+        _min_rounds = _rounds
+        _max_rounds = _rounds
+    else:
+        _min_rounds = debate_settings.get("min_rounds", 3)
+        _max_rounds = debate_settings.get("max_rounds", 10)
+
     state = {
         "debate_id": debate_id,
         "situation_brief": body.situation_brief,
         "default_model": body.default_model,
+        "mode": mode,
         "analysis": None,
         "agents": [],
         "status": "created",
-        "min_rounds": debate_settings.get("min_rounds", 3),
-        "max_rounds": debate_settings.get("max_rounds", 10),
+        "min_rounds": _min_rounds,
+        "max_rounds": _max_rounds,
         "current_round": 0,
         "debate_log": [],
         "all_evidences": [],
@@ -929,6 +956,100 @@ async def _achat_json_with_pdf(
         )
 
 
+async def _complaint_select_template(llm, situation: str, analysis: dict, language: str) -> dict:
+    """
+    Complaint-mode only: pick the best 소장 template for the situation and
+    reframe the debate to argue that template's validity.
+
+    Returns a dict to store in state["selected_template"]:
+        {id, title, category, doc_type, sections, full_text, selection_reason}
+    plus reframed debate fields merged into `analysis` by the caller:
+        {topic, opinion_a, opinion_b}
+
+    Falls back gracefully (first template, generic reframe) on any failure so
+    the analyze phase never aborts because of template selection.
+    """
+    from app.utils.template_loader import get_template_loader
+
+    loader = get_template_loader()
+    loader.ensure_loaded()
+    catalog = loader.catalog_text()
+    if not catalog.strip():
+        logger.warning("[analyze] Complaint mode but NO templates available — skipping selection.")
+        return {}
+
+    topic = analysis.get("topic", "")
+    issues = "; ".join(analysis.get("key_issues", [])[:6])
+    prompt = (
+        "You are a senior Korean litigation attorney. Based on the situation and "
+        "analysis below, pick the SINGLE most appropriate legal-document template "
+        "(소장/신청서/고소장 등) the plaintiff should file, then frame the debate over "
+        "whether filing that document is legally sound.\n\n"
+        f"## Situation\n{situation[:3000]}\n\n"
+        f"## Analyzed topic\n{topic}\n\n"
+        f"## Key issues\n{issues}\n\n"
+        f"## Available templates (choose exactly one id)\n{catalog}\n\n"
+        "Output ONLY valid JSON:\n"
+        "{\n"
+        '  "selected_template_id": "<one id from the list above>",\n'
+        '  "selection_reason": "왜 이 양식이 이 사안에 적합한지 1-2문장",\n'
+        '  "opinion_a": "원고측 입장: 위 사안에서 선택된 소장을 제기할 법적 근거가 충분하고 청구가 인용될 수 있다는 구체적 주장",\n'
+        '  "opinion_b": "피고/반대 입장: 해당 소장이 요건 미비·법리·사실관계상 기각 또는 각하될 수 있다는 구체적 주장"\n'
+        "}\n"
+    )
+    prompt += get_language_instruction(language)
+
+    selected_id = ""
+    reason = ""
+    opinion_a = ""
+    opinion_b = ""
+    try:
+        result = await llm.achat_json(
+            [{"role": "user", "content": prompt}], temperature=0.2, max_tokens=2048,
+        )
+        selected_id = (result.get("selected_template_id") or "").strip()
+        reason = result.get("selection_reason", "")
+        opinion_a = result.get("opinion_a", "")
+        opinion_b = result.get("opinion_b", "")
+    except Exception as exc:
+        logger.warning("[analyze] Template selection LLM failed: %s — falling back.", exc)
+
+    tpl = loader.get(selected_id)
+    if tpl is None:
+        catalog_ids = [t["id"] for t in loader.list_catalog()]
+        fallback_id = catalog_ids[0] if catalog_ids else ""
+        if selected_id:
+            logger.warning("[analyze] Invalid template id '%s' — falling back to '%s'.", selected_id, fallback_id)
+        tpl = loader.get(fallback_id)
+    if tpl is None:
+        return {}
+
+    selected = {
+        "id": tpl["id"],
+        "title": tpl["title"],
+        "category": tpl.get("category", ""),
+        "doc_type": tpl.get("doc_type", "소장"),
+        "sections": tpl.get("sections", []),
+        "full_text": tpl.get("full_text", ""),
+        "selection_reason": reason,
+    }
+
+    # Reframe the debate around the chosen document's validity.
+    orig_topic = analysis.get("topic", "")
+    analysis["topic"] = f"[소장 검토] '{tpl['title']}' 제기의 법적 타당성 — {orig_topic}".strip(" —")
+    if opinion_a:
+        analysis["opinion_a"] = opinion_a
+    else:
+        analysis["opinion_a"] = f"이 사안에서 '{tpl['title']}'을(를) 제기할 법적 근거가 충분하며 청구가 인용될 수 있다."
+    if opinion_b:
+        analysis["opinion_b"] = opinion_b
+    else:
+        analysis["opinion_b"] = f"'{tpl['title']}'은(는) 요건 미비·법리·사실관계상 기각 또는 각하될 수 있다."
+
+    logger.info("[analyze] Complaint template selected: %s (%s)", tpl["id"], tpl["title"])
+    return selected
+
+
 @router.post("/{debate_id}/analyze")
 async def analyze_debate(debate_id: str):
     """Use LLM to analyze the situation brief and extract debate structure."""
@@ -1059,10 +1180,20 @@ async def analyze_debate(debate_id: str):
         # Merge all steps
         analysis = {**step1_result, **step2_result, **step3_result}
 
+        # Complaint mode: select the 소장 template and reframe the debate to
+        # argue that template's validity. Mutates `analysis` (topic/opinions)
+        # and returns the selected template to persist on state.
+        _selected_template: dict = {}
+        if state.get("mode", "debate") == "complaint":
+            _selected_template = await _complaint_select_template(llm, situation, analysis, language)
+
     except Exception as exc:
         logger.error("Analysis failed for debate %s: %s", debate_id, exc)
         await DebateStore.aupdate(debate_id, status="created")
         raise HTTPException(status_code=502, detail=f"LLM analysis failed: {exc}") from exc
+
+    if _selected_template:
+        state["selected_template"] = _selected_template
 
     validated = DebateAnalysis(**analysis)
     analysis_data = validated.model_dump()
@@ -1380,6 +1511,9 @@ async def start_debate(debate_id: str):
         "missing_information": analysis.get("missing_information", []),
         "team_a_cautions": analysis.get("team_a_cautions", []),
         "team_b_cautions": analysis.get("team_b_cautions", []),
+        # Mode + complaint drafting (default keeps debate behavior identical)
+        "mode": state.get("mode", "debate"),
+        "selected_template": state.get("selected_template", {}),
     }
 
     task = _task_mgr.create_task(task_type="debate_run", message="Starting debate...")
@@ -1440,6 +1574,9 @@ async def get_debate_status(debate_id: str):
         "verdicts": state.get("verdicts", []),
         "team_a_name": state.get("team_a_name", "Team A"),
         "team_b_name": state.get("team_b_name", "Team B"),
+        # Mode + complaint drafting (frontend uses these to branch labels/sections)
+        "mode": state.get("mode", "debate"),
+        "selected_template": state.get("selected_template", {}),
     }
 
     # Attach task progress if a debate task is running

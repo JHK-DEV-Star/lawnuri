@@ -8,6 +8,8 @@ class SettingsState {
   final Map<String, dynamic> providers;
   final Map<String, dynamic> debateSettings;
   final Map<String, dynamic> legalApiSettings;
+  final Map<String, dynamic> complaintSettings;
+  final List<Map<String, dynamic>> complaintTemplates;
   final bool isLoading;
   final String? error;
 
@@ -16,6 +18,8 @@ class SettingsState {
     this.providers = const {},
     this.debateSettings = const {},
     this.legalApiSettings = const {},
+    this.complaintSettings = const {},
+    this.complaintTemplates = const [],
     this.isLoading = false,
     this.error,
   });
@@ -26,6 +30,8 @@ class SettingsState {
     Map<String, dynamic>? providers,
     Map<String, dynamic>? debateSettings,
     Map<String, dynamic>? legalApiSettings,
+    Map<String, dynamic>? complaintSettings,
+    List<Map<String, dynamic>>? complaintTemplates,
     bool? isLoading,
     String? error,
   }) {
@@ -34,6 +40,8 @@ class SettingsState {
       providers: providers ?? this.providers,
       debateSettings: debateSettings ?? this.debateSettings,
       legalApiSettings: legalApiSettings ?? this.legalApiSettings,
+      complaintSettings: complaintSettings ?? this.complaintSettings,
+      complaintTemplates: complaintTemplates ?? this.complaintTemplates,
       isLoading: isLoading ?? this.isLoading,
       error: error,
     );
@@ -55,6 +63,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         _api.getProviders(),
         _api.getDebateSettings(),
         _api.getLegalApiSettings(),
+        _api.getComplaintSettings(),
+        _api.getComplaintTemplates(),
       ]);
 
       final debateSettings = results[2] as Map<String, dynamic>;
@@ -67,6 +77,8 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
         providers: results[1] as Map<String, dynamic>,
         debateSettings: debateSettings,
         legalApiSettings: results[3] as Map<String, dynamic>,
+        complaintSettings: results[4] as Map<String, dynamic>,
+        complaintTemplates: results[5] as List<Map<String, dynamic>>,
         isLoading: false,
       );
     } catch (e) {
@@ -149,6 +161,40 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       state = state.copyWith(isLoading: false);
     } catch (e) {
       state = state.copyWith(error: e.toString(), isLoading: false);
+    }
+  }
+
+  /// Load complaint (소장) settings.
+  Future<void> loadComplaintSettings() async {
+    try {
+      final settings = await _api.getComplaintSettings();
+      state = state.copyWith(complaintSettings: settings);
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
+    }
+  }
+
+  /// Update complaint settings.
+  Future<void> updateComplaintSettings(Map<String, dynamic> settings) async {
+    state = state.copyWith(isLoading: true, error: null);
+    try {
+      await _api.updateComplaintSettings(settings);
+      await loadComplaintSettings();
+      // templates_dir may have changed → reload catalog.
+      final templates = await _api.getComplaintTemplates();
+      state = state.copyWith(complaintTemplates: templates, isLoading: false);
+    } catch (e) {
+      state = state.copyWith(error: e.toString(), isLoading: false);
+    }
+  }
+
+  /// Reload 소장 templates from disk.
+  Future<void> refreshComplaintTemplates() async {
+    try {
+      final templates = await _api.refreshComplaintTemplates();
+      state = state.copyWith(complaintTemplates: templates);
+    } catch (e) {
+      state = state.copyWith(error: e.toString());
     }
   }
 

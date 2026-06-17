@@ -18,6 +18,7 @@ class DebateCreate(BaseModel):
 
     situation_brief: str
     default_model: str  # e.g., "gpt-4o-mini"
+    mode: Literal["debate", "complaint"] = "debate"  # "complaint" = 소장 작성 mode
 
 
 class DebateAnalysis(BaseModel):

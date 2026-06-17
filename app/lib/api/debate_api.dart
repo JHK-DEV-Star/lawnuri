@@ -20,15 +20,19 @@ class DebateApi {
   }
 
   /// Create a new debate session.
+  ///
+  /// [mode] is "debate" (default) or "complaint" (소장 작성 mode).
   Future<Map<String, dynamic>> createDebate(
     String situationBrief,
-    String defaultModel,
-  ) async {
+    String defaultModel, {
+    String mode = 'debate',
+  }) async {
     final response = await _dio.post(
       '/api/debate/create',
       data: {
         'situation_brief': situationBrief,
         'default_model': defaultModel,
+        'mode': mode,
       },
     );
     return response.data as Map<String, dynamic>;

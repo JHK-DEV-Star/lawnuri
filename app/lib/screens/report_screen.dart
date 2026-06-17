@@ -54,30 +54,40 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     }
   }
 
-  /// Download the report file to a user-selected location.
-  Future<void> _downloadReport() async {
+  bool get _isComplaint => (_report?['mode'] == 'complaint');
+
+  /// Download a file (report / complaint pdf / complaint word) to a chosen path.
+  Future<void> _download(String kind) async {
+    final spec = <String, List<String>>{
+      'report': ['보고서', 'debate_report_${widget.debateId}.pdf'],
+      'complaint_pdf': ['소장(PDF)', 'complaint_${widget.debateId}.pdf'],
+      'complaint_word': ['소장(Word)', 'complaint_${widget.debateId}.docx'],
+    }[kind]!;
+
     final savePath = await FilePicker.platform.saveFile(
-      dialogTitle: 'Save Report',
-      fileName: 'debate_report_${widget.debateId}.pdf',
+      dialogTitle: '${spec[0]} 저장',
+      fileName: spec[1],
       type: FileType.any,
     );
-
     if (savePath == null) return;
 
     try {
-      await _reportApi.downloadReport(widget.debateId, savePath);
+      if (kind == 'report') {
+        await _reportApi.downloadReport(widget.debateId, savePath);
+      } else if (kind == 'complaint_pdf') {
+        await _reportApi.downloadComplaintPdf(widget.debateId, savePath);
+      } else {
+        await _reportApi.downloadComplaintWord(widget.debateId, savePath);
+      }
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Report saved to $savePath')),
+          SnackBar(content: Text('${spec[0]} 저장됨: $savePath')),
         );
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Download failed: $e'),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text('다운로드 실패: $e'), backgroundColor: Colors.red),
         );
       }
     }
@@ -101,11 +111,23 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
           style: TextStyle(color: Colors.black87),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.download, color: Colors.black87),
-            tooltip: S.get('download_report'),
-            onPressed: _downloadReport,
-          ),
+          if (_isComplaint)
+            PopupMenuButton<String>(
+              icon: const Icon(Icons.download, color: Colors.black87),
+              tooltip: '다운로드',
+              onSelected: _download,
+              itemBuilder: (context) => const [
+                PopupMenuItem(value: 'report', child: Text('보고서 다운 (PDF)')),
+                PopupMenuItem(value: 'complaint_pdf', child: Text('소장 다운 (PDF)')),
+                PopupMenuItem(value: 'complaint_word', child: Text('소장 다운 (Word)')),
+              ],
+            )
+          else
+            IconButton(
+              icon: const Icon(Icons.download, color: Colors.black87),
+              tooltip: S.get('download_report'),
+              onPressed: () => _download('report'),
+            ),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(1),
@@ -157,6 +179,12 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
           _buildSituationAnalysis(),
           const SizedBox(height: 20),
 
+          // 소장 분석 (complaint mode only) — surfaced near the top
+          if (_isComplaint) ...[
+            _buildComplaintAnalysis(),
+            const SizedBox(height: 20),
+          ],
+
           // 01 종합 요약
           _buildExecutiveSummary(),
           const SizedBox(height: 20),
@@ -188,9 +216,69 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
           // 08 토론 기록
           _buildDebateRecord(),
 
+          // 작성된 소장 (complaint mode only) — below the full report
+          if (_isComplaint) ...[
+            const SizedBox(height: 20),
+            _buildDraftedComplaint(),
+          ],
+
           const SizedBox(height: 32),
         ],
       ),
+    );
+  }
+
+  Widget _buildComplaintAnalysis() {
+    final analysis = (_report?['complaint_analysis'] as Map?) ?? {};
+    final strategy = (analysis['strategy'] as String?)?.trim() ?? '';
+    final title = (analysis['template_title'] as String?) ?? '';
+    final reason = (analysis['selection_reason'] as String?) ?? '';
+    return _numberedSectionCard(
+      number: '소장',
+      title: '소장 분석',
+      icon: Icons.description_outlined,
+      children: [
+        if (title.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text('선택된 양식: $title',
+                style: const TextStyle(fontWeight: FontWeight.w600)),
+          ),
+        if (reason.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Text('선택 이유: $reason',
+                style: const TextStyle(color: Colors.black54, fontSize: 13)),
+          ),
+        SelectableText(
+          strategy.isEmpty ? '(분석 내용 없음)' : strategy,
+          style: const TextStyle(height: 1.5),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildDraftedComplaint() {
+    final text = (_report?['drafted_complaint'] as String?)?.trim() ?? '';
+    return _numberedSectionCard(
+      number: '소장',
+      title: '작성된 소장',
+      icon: Icons.gavel_outlined,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFAFAFA),
+            border: Border.all(color: _borderColor),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: SelectableText(
+            text.isEmpty ? '(작성된 소장이 없습니다)' : text,
+            style: const TextStyle(height: 1.6, fontSize: 14),
+          ),
+        ),
+      ],
     );
   }
 

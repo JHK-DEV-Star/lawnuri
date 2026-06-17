@@ -28,6 +28,10 @@ class Config:
     DATA_DIR: str = os.path.join(_base_dir, 'data')
     UPLOADS_DIR: str = os.path.join(_base_dir, 'data', 'uploads')
     SETTINGS_FILE: str = os.path.join(_base_dir, 'data', 'settings.json')
+    # Complaint (소장) templates folder. Overridable via settings.complaint.templates_dir.
+    TEMPLATES_DIR: str = os.getenv(
+        "TEMPLATES_DIR", os.path.join(_base_dir, 'data', 'templates')
+    )
 
     DB_BACKEND: str = os.getenv("DB_BACKEND", "sqlite")
     DB_PATH: str = os.path.join(_base_dir, 'data', 'lawnuri.db')

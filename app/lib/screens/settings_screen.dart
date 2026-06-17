@@ -52,6 +52,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
   double _temperature = 0.7;
   String _selectedLanguage = 'ko';
 
+  // Settings sidebar category: general | legal | api_keys | debate | complaint
+  String _settingsCategory = 'general';
+  final _complaintTemplatesDirCtrl = TextEditingController();
+
   final _legalApiKeyCtrl = TextEditingController();
   final _maxApiCallsCtrl = TextEditingController();
 
@@ -198,6 +202,18 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       } catch (_) {
         // legal_api endpoint not available yet, keep defaults
       }
+      // Load complaint settings (templates_dir)
+      try {
+        final complaintSettings = await _api.getComplaintSettings();
+        if (mounted) {
+          setState(() {
+            _complaintTemplatesDirCtrl.text =
+                complaintSettings['templates_dir'] as String? ?? '';
+          });
+        }
+      } catch (_) {
+        // legal_api endpoint not available yet, keep defaults
+      }
     });
   }
 
@@ -288,6 +304,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     _judgeCountCtrl.dispose();
     _legalApiKeyCtrl.dispose();
     _maxApiCallsCtrl.dispose();
+    _complaintTemplatesDirCtrl.dispose();
     super.dispose();
   }
 
@@ -810,13 +827,20 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           ? const Center(
               child: CircularProgressIndicator(color: _accent),
             )
-          : SingleChildScrollView(
+          : Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+            _buildSettingsSidebar(),
+            const VerticalDivider(width: 1, color: _cardBorder),
+            Expanded(
+            child: SingleChildScrollView(
               padding:
                   const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // ===== Language Selection (TOP) =====
+                  // ===== General: Language Selection =====
+                  if (_settingsCategory == 'general') ...[
                   Container(
                     margin: const EdgeInsets.only(bottom: 24),
                     padding: const EdgeInsets.all(16),
@@ -855,6 +879,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       ],
                     ),
                   ),
+                  ],
+
+                  // ===== Legal API =====
+                  if (_settingsCategory == 'legal') ...[
                   // ---- External Legal API (shown first in the API Keys area) ----
                   _sectionHeader(S.get('external_legal_api')),
                   Padding(
@@ -986,8 +1014,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ),
                   ),
 
-                  const SizedBox(height: 24),
+                  ],
 
+                  // ===== API Keys =====
+                  if (_settingsCategory == 'api_keys') ...[
                   // ---- API Keys ----
                   _sectionHeader(S.get('api_keys')),
                   Padding(
@@ -1024,8 +1054,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     hint: S.get('custom_provider_hint'),
                   ),
 
-                  const SizedBox(height: 24),
+                  ],
 
+                  // ===== Debate Settings =====
+                  if (_settingsCategory == 'debate') ...[
                   // ---- Debate Settings ----
                   _sectionHeader(S.get('debate_settings')),
                   const SizedBox(height: 8),
@@ -1144,6 +1176,11 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ),
                   ),
 
+                  ],
+
+                  // ===== Complaint (소장 작성) Settings =====
+                  if (_settingsCategory == 'complaint') ..._buildComplaintSettings(settings),
+
                   const SizedBox(height: 32),
 
                   // Error display.
@@ -1158,8 +1195,136 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ],
               ),
             ),
+            ),
+            ],
+          ),
       ),
     );
+  }
+
+  Widget _buildSettingsSidebar() {
+    final items = <List<dynamic>>[
+      ['general', Icons.settings_outlined, S.get('language')],
+      ['api_keys', Icons.key_outlined, S.get('api_keys')],
+      ['legal', Icons.gavel_outlined, S.get('external_legal_api')],
+      ['debate', Icons.forum_outlined, S.get('debate_settings')],
+      ['complaint', Icons.description_outlined, '소장 작성'],
+    ];
+    return Container(
+      width: 200,
+      color: const Color(0xFFFAFAFA),
+      child: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        children: items.map((it) {
+          final id = it[0] as String;
+          final selected = _settingsCategory == id;
+          return InkWell(
+            onTap: () => setState(() => _settingsCategory = id),
+            child: Container(
+              color: selected ? Colors.white : Colors.transparent,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Row(
+                children: [
+                  Icon(it[1] as IconData,
+                      size: 18, color: selected ? _accent : _subtleText),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      it[2] as String,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                        color: selected ? Colors.black87 : _subtleText,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
+      ),
+    );
+  }
+
+  List<Widget> _buildComplaintSettings(SettingsState settings) {
+    final templates = settings.complaintTemplates;
+    final rounds = settings.complaintSettings['rounds']?.toString() ?? '3';
+    return [
+      _sectionHeader('소장 작성'),
+      const SizedBox(height: 8),
+      Card(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+          side: const BorderSide(color: _cardBorder),
+        ),
+        elevation: 0,
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('기본 라운드: $rounds (고정)',
+                  style: const TextStyle(color: _subtleText, fontSize: 13)),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _complaintTemplatesDirCtrl,
+                decoration: _inputDecoration('양식 폴더 경로 (비우면 기본 경로)',
+                    icon: Icons.folder_outlined),
+                onChanged: (_) => _autoSaveComplaintSettings(),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  OutlinedButton.icon(
+                    onPressed: () => ref
+                        .read(settingsProvider.notifier)
+                        .refreshComplaintTemplates(),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.black87,
+                      side: const BorderSide(color: _cardBorder),
+                    ),
+                    icon: const Icon(Icons.refresh, size: 16),
+                    label: const Text('양식 새로고침'),
+                  ),
+                  const SizedBox(width: 12),
+                  Text('${templates.length}개 양식 감지됨',
+                      style: const TextStyle(color: _subtleText, fontSize: 12)),
+                ],
+              ),
+              const SizedBox(height: 12),
+              ...templates.map((t) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.article_outlined,
+                            size: 16, color: _subtleText),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            '${t['title'] ?? t['id']}'
+                            '${(t['category'] ?? '').toString().isNotEmpty ? '  ·  ${t['category']}' : ''}',
+                            style: const TextStyle(fontSize: 13),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+              if (templates.isEmpty)
+                const Text('감지된 양식이 없습니다. 폴더에 .json/.docx 양식을 넣고 새로고침하세요.',
+                    style: TextStyle(color: _subtleText, fontSize: 12)),
+            ],
+          ),
+        ),
+      ),
+    ];
+  }
+
+  void _autoSaveComplaintSettings() {
+    ref.read(settingsProvider.notifier).updateComplaintSettings({
+      'templates_dir': _complaintTemplatesDirCtrl.text.trim(),
+    });
   }
 
   /// Build the Vertex AI card with service account JSON, project ID, location.

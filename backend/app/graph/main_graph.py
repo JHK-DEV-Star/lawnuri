@@ -30,7 +30,9 @@ from langgraph.graph import END, StateGraph
 from app.graph.edges.decide_judge_qa import decide_judge_qa
 from app.graph.edges.decide_next import decide_next
 from app.graph.edges.should_continue import should_continue
+from app.graph.edges.should_synthesize import should_synthesize
 from app.graph.nodes.final_judgment import final_judgment_node
+from app.graph.nodes.synthesis import synthesis_node
 from app.graph.nodes.judge_accumulate import judge_accumulate_node
 from app.graph.nodes.judge_question import judge_question_node, agent_answer_node
 from app.graph.nodes.round_end import round_end_node
@@ -115,6 +117,7 @@ async def _team_speak_wrapper(
         "judge_qa_log": state.get("judge_qa_log", []),
         "team_a_name": team_a_name,
         "team_b_name": team_b_name,
+        "selected_template": state.get("selected_template", {}),
         "judge_improvement_feedback": (state.get("judge_improvement_feedback") or {}).get(current_team, ""),
         # --- Fields read by subgraph nodes ---
         "all_evidences": state.get("all_evidences", []),
@@ -320,6 +323,24 @@ async def _final_judgment_wrapper(
     return result
 
 
+async def _synthesis_wrapper(
+    state: DebateState,
+    *,
+    llm_client: LLMClient,
+    searcher: Searcher | None = None,
+) -> dict:
+    """Complaint mode: draft the 소장 after final_judgment. Sets the drafting phase."""
+    debate_id = state.get("debate_id", "")
+    if debate_id:
+        state["current_phase"] = "drafting"
+        try:
+            from app.api.debate import DebateStore
+            await DebateStore.asave(debate_id, state)
+        except Exception:
+            pass
+    return await synthesis_node(state, llm_client, searcher)
+
+
 async def _judge_question_wrapper(state: DebateState, *, llm_client: LLMClient) -> dict:
     """Bind LLM client to judge_question_node."""
     return await judge_question_node(state, llm_client)
@@ -422,6 +443,8 @@ def build_debate_graph(
     graph.add_node("final_judgment", bound_final_judgment)
     graph.add_node("judge_question", bound_judge_question)
     graph.add_node("agent_answer", bound_agent_answer)
+    bound_synthesis = partial(_synthesis_wrapper, llm_client=llm_client, searcher=searcher)
+    graph.add_node("synthesis", bound_synthesis)
 
     # Set entry point
     graph.set_entry_point("user_interrupt")
@@ -465,8 +488,19 @@ def build_debate_graph(
         },
     )
 
-    # Final judgment leads to END
-    graph.add_edge("final_judgment", END)
+    # After final judgment: complaint mode drafts the 소장 (synthesis),
+    # debate mode ends exactly as before.
+    graph.add_conditional_edges(
+        "final_judgment",
+        should_synthesize,
+        {
+            "synthesis": "synthesis",
+            "__end__": END,
+        },
+    )
+
+    # Synthesis (소장 draft) leads to END
+    graph.add_edge("synthesis", END)
 
     # Compile the graph (with optional checkpointer for persistent state)
     compiled = graph.compile(checkpointer=checkpointer)

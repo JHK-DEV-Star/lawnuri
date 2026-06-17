@@ -17,7 +17,7 @@ class FileParser:
     """
 
     # Supported file extensions
-    SUPPORTED_EXTENSIONS = {".pdf", ".md", ".txt"}
+    SUPPORTED_EXTENSIONS = {".pdf", ".md", ".txt", ".docx"}
 
     @classmethod
     def extract_text(cls, file_path: str | Path) -> str:
@@ -53,9 +53,52 @@ class FileParser:
 
         if ext == ".pdf":
             return cls._extract_pdf(path)
+        elif ext == ".docx":
+            return cls._extract_docx(path)
         else:
             # .md and .txt are both plain text
             return cls._extract_text_file(path)
+
+    @classmethod
+    def _extract_docx(cls, path: Path) -> str:
+        """
+        Extract text from a .docx file using python-docx.
+
+        Reads paragraphs and table cells in document order.
+
+        Args:
+            path: Path to the .docx file.
+
+        Returns:
+            Extracted text.
+        """
+        try:
+            import docx  # python-docx
+        except ImportError:
+            raise ImportError(
+                "python-docx is required for .docx parsing. "
+                "Install it with: pip install python-docx"
+            )
+
+        document = docx.Document(str(path))
+        parts: List[str] = []
+        for para in document.paragraphs:
+            if para.text.strip():
+                parts.append(para.text)
+        # Include table content (legal templates often use tables)
+        for table in document.tables:
+            for row in table.rows:
+                cells = [c.text.strip() for c in row.cells if c.text.strip()]
+                if cells:
+                    parts.append(" | ".join(cells))
+
+        result = "\n".join(parts)
+        logger.info(
+            "[FileParser] DOCX extraction complete: %d blocks, %d chars",
+            len(parts),
+            len(result),
+        )
+        return result
 
     @classmethod
     def read_pdf_bytes(cls, file_path: str | Path) -> bytes:

@@ -29,6 +29,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final TextEditingController _briefController = TextEditingController();
   String? _selectedModel;
+  String _mode = 'debate'; // 'debate' | 'complaint' (소장 작성)
   final List<_UploadedFile> _uploadedFiles = [];
   bool _isStarting = false;
   bool _showAgentSidebar = false;
@@ -158,25 +159,39 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Future<void> _startSearch() async {
     if (_briefController.text.trim().isEmpty || _selectedModel == null) return;
 
-    // Check legal API key is configured
     final settings = ref.read(settingsProvider);
-    final legalApi = settings.legalApiSettings;
-    final legalKey = legalApi['law_api_key'] as String? ?? '';
-    if (legalKey.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(S.get('legal_api_missing')),
-          backgroundColor: Colors.red,
-        ),
-      );
-      return;
+    if (_mode == 'complaint') {
+      // Complaint mode gates on having at least one 소장 template, not the legal API key.
+      final templates = settings.complaintTemplates;
+      if (templates.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('소장 양식이 없습니다. 설정 > 소장 작성에서 양식을 추가하세요.'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+    } else {
+      // Check legal API key is configured (debate mode)
+      final legalApi = settings.legalApiSettings;
+      final legalKey = legalApi['law_api_key'] as String? ?? '';
+      if (legalKey.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(S.get('legal_api_missing')),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
     }
 
     setState(() => _isStarting = true);
 
     final notifier = ref.read(debateProvider.notifier);
     try {
-      await notifier.createDebate(_briefController.text.trim(), _selectedModel!);
+      await notifier.createDebate(_briefController.text.trim(), _selectedModel!, mode: _mode);
       final debateId = ref.read(debateProvider).debateId;
       if (debateId == null) throw Exception('Failed to create debate');
 
@@ -220,7 +235,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     final canStart = _hasText && _selectedModel != null && !_isStarting;
 
     return Scaffold(
-      body: Column(
+      body: Stack(
+        children: [
+          // Faint brand watermark behind the content (does not block input).
+          Positioned.fill(
+            child: IgnorePointer(
+              child: Center(
+                child: Opacity(
+                  opacity: 0.04,
+                  child: Image.asset(
+                    'assets/logo.png',
+                    width: 520,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Column(
         children: [
           // --- Header ---
           _buildHeader(context),
@@ -262,6 +294,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             ),
           ),
         ],
+          ),
+        ],
       ),
     );
   }
@@ -273,6 +307,28 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       color: Colors.white,
       child: Row(
         children: [
+          // Mode toggle: 토론 vs 소장 작성
+          SegmentedButton<String>(
+            segments: const [
+              ButtonSegment(
+                value: 'debate',
+                label: Text('토론'),
+                icon: Icon(Icons.forum_outlined, size: 16),
+              ),
+              ButtonSegment(
+                value: 'complaint',
+                label: Text('소장 작성'),
+                icon: Icon(Icons.description_outlined, size: 16),
+              ),
+            ],
+            selected: {_mode},
+            showSelectedIcon: false,
+            style: ButtonStyle(
+              visualDensity: VisualDensity.compact,
+              textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 13)),
+            ),
+            onSelectionChanged: (sel) => setState(() => _mode = sel.first),
+          ),
           const Spacer(),
           // Agent sidebar toggle
           IconButton(

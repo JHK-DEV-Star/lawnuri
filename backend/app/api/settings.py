@@ -92,6 +92,13 @@ class DebateSettingsUpdate(BaseModel):
     llm_temperature: Optional[float] = None
 
 
+class ComplaintSettingsUpdate(BaseModel):
+    """Request body for updating complaint (소장) settings."""
+    rounds: Optional[int] = None
+    templates_dir: Optional[str] = None
+    language: Optional[str] = None
+
+
 class LegalApiUpdate(BaseModel):
     """Request body for updating legal API settings."""
     law_api_key: Optional[str] = None
@@ -212,6 +219,11 @@ DEFAULT_SETTINGS: dict[str, Any] = {
         "law_api_key": "",
         "precedent_api_key": "",
         "max_api_calls_per_round": 15,
+    },
+    "complaint": {
+        "rounds": 3,            # fixed default round count for 소장 mode
+        "templates_dir": "",    # empty → use config.TEMPLATES_DIR default
+        "language": "ko",
     },
 }
 
@@ -777,6 +789,55 @@ async def update_debate_settings(body: DebateSettingsUpdate):
     await asave_settings(data)
     logger.info("Debate settings updated: %s", list(update.keys()))
     return {"status": "ok", "debate": debate}
+
+
+@router.get("/complaint")
+async def get_complaint_settings():
+    """Get current complaint (소장) configuration."""
+    data = await aload_settings()
+    return {"complaint": data.get("complaint", DEFAULT_SETTINGS["complaint"])}
+
+
+@router.put("/complaint")
+async def update_complaint_settings(body: ComplaintSettingsUpdate):
+    """Update complaint configuration (partial update supported)."""
+    data = await aload_settings()
+    complaint = data.get("complaint", dict(DEFAULT_SETTINGS["complaint"]))
+
+    update = body.model_dump(exclude_none=True)
+    complaint.update(update)
+
+    data["complaint"] = complaint
+    await asave_settings(data)
+
+    # If the templates folder changed, reload the catalog so it takes effect now.
+    if "templates_dir" in update:
+        try:
+            from app.utils.template_loader import get_template_loader
+            get_template_loader().refresh()
+        except Exception as exc:
+            logger.warning("Template reload after settings change failed: %s", exc)
+
+    logger.info("Complaint settings updated: %s", list(update.keys()))
+    return {"status": "ok", "complaint": complaint}
+
+
+@router.get("/complaint/templates")
+async def list_complaint_templates():
+    """List available 소장 templates (catalog for the settings UI / selection)."""
+    from app.utils.template_loader import get_template_loader
+    loader = get_template_loader()
+    loader.ensure_loaded()
+    return {"templates": loader.list_catalog(), "count": loader.count()}
+
+
+@router.post("/complaint/templates/refresh")
+async def refresh_complaint_templates():
+    """Reload 소장 templates from disk (after dropping in new files)."""
+    from app.utils.template_loader import get_template_loader
+    loader = get_template_loader()
+    count = loader.refresh()
+    return {"status": "ok", "count": count, "templates": loader.list_catalog()}
 
 
 @router.get("")

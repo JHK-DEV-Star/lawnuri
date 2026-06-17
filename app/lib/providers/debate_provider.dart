@@ -105,11 +105,12 @@ class DebateNotifier extends StateNotifier<DebateState> {
 
   DebateNotifier() : super(const DebateState());
 
-  /// Create a new debate session.
-  Future<void> createDebate(String situationBrief, String defaultModel) async {
+  /// Create a new debate session. [mode] is "debate" or "complaint".
+  Future<void> createDebate(String situationBrief, String defaultModel,
+      {String mode = 'debate'}) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      final result = await _api.createDebate(situationBrief, defaultModel);
+      final result = await _api.createDebate(situationBrief, defaultModel, mode: mode);
       state = state.copyWith(
         debateId: result['debate_id'] as String,
         status: 'created',

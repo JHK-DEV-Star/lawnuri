@@ -89,6 +89,32 @@ class SettingsApi {
     return response.data as Map<String, dynamic>;
   }
 
+  /// Get complaint (소장) settings (rounds, templates_dir, language).
+  Future<Map<String, dynamic>> getComplaintSettings() async {
+    final response = await _dio.get('/api/settings/complaint');
+    return Map<String, dynamic>.from(
+        (response.data as Map<String, dynamic>)['complaint'] as Map);
+  }
+
+  /// Update complaint settings.
+  Future<void> updateComplaintSettings(Map<String, dynamic> settings) async {
+    await _dio.put('/api/settings/complaint', data: settings);
+  }
+
+  /// List available 소장 templates (catalog).
+  Future<List<Map<String, dynamic>>> getComplaintTemplates() async {
+    final response = await _dio.get('/api/settings/complaint/templates');
+    final list = (response.data as Map<String, dynamic>)['templates'] as List? ?? [];
+    return list.map((t) => Map<String, dynamic>.from(t as Map)).toList();
+  }
+
+  /// Reload 소장 templates from disk.
+  Future<List<Map<String, dynamic>>> refreshComplaintTemplates() async {
+    final response = await _dio.post('/api/settings/complaint/templates/refresh');
+    final list = (response.data as Map<String, dynamic>)['templates'] as List? ?? [];
+    return list.map((t) => Map<String, dynamic>.from(t as Map)).toList();
+  }
+
   /// Get all application settings at once.
   Future<Map<String, dynamic>> getAllSettings() async {
     final response = await _dio.get('/api/settings');

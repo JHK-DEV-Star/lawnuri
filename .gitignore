@@ -10,8 +10,10 @@ venv/
 .env
 .env.local
 
-# Data (generated at runtime)
-backend/data/
+# Data (generated at runtime) — but ship the seed complaint templates
+backend/data/*
+!backend/data/templates/
+!backend/data/templates/*.json
 backend/logs/
 
 # Flutter

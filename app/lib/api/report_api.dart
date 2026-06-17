@@ -30,4 +30,22 @@ class ReportApi {
       ),
     );
   }
+
+  /// Download the drafted 소장 as a PDF (complaint mode).
+  Future<void> downloadComplaintPdf(String debateId, String savePath) async {
+    await _dio.download(
+      '/api/report/$debateId/complaint/download/pdf',
+      savePath,
+      options: Options(responseType: ResponseType.bytes),
+    );
+  }
+
+  /// Download the drafted 소장 as a Word (.docx) document (complaint mode).
+  Future<void> downloadComplaintWord(String debateId, String savePath) async {
+    await _dio.download(
+      '/api/report/$debateId/complaint/download/word',
+      savePath,
+      options: Options(responseType: ResponseType.bytes),
+    );
+  }
 }

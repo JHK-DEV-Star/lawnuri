@@ -38,6 +38,9 @@ class TeamState(TypedDict):
     team_b_name: str                        # Display name for Team B
     team_cautions: list                     # Strategic warnings for this team
 
+    # --- Complaint mode (passed through to debater prompts) ---
+    selected_template: dict                 # Selected 소장 template (id/title/sections/full_text) — complaint mode only
+
     # --- Fields from DebateState (read by subgraph nodes) ---
     all_evidences: list                   # All submitted evidence so far (for citation re-verification)
     blacklisted_evidence: list            # Evidence blacklisted in previous rounds
@@ -114,3 +117,10 @@ class DebateState(TypedDict):
     speaking_order_reasoning: str                             # Why the judge chose this round's first speaker
     # --- Multi-agent fields (Step 5) ---
     agent_memories: dict                                     # {agent_id: [memory_entry, ...]} — persistent across rounds
+
+    # --- Mode + complaint drafting (defaults keep debate behavior identical) ---
+    mode: str                                                # "debate" (default) | "complaint"
+    current_phase: str                                       # "preparing" | "discussing" | "judging" | "drafting" — for frontend polling
+    selected_template: dict                                  # Selected 소장 template — complaint mode only
+    complaint_analysis: dict                                 # synthesis output: how to draft the 소장 — complaint mode only
+    drafted_complaint: str                                   # synthesis output: the drafted 소장 text — complaint mode only

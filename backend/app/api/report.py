@@ -335,6 +335,14 @@ Output ONLY valid JSON with the following structure:
         })
     report["transcript"] = transcript
 
+    # Complaint mode: surface the synthesis outputs (소장 분석 + 작성된 소장).
+    # These were produced by the synthesis graph node and persisted on state.
+    if state.get("mode", "debate") == "complaint":
+        report["mode"] = "complaint"
+        report["complaint_analysis"] = state.get("complaint_analysis", {})
+        report["drafted_complaint"] = state.get("drafted_complaint", "")
+        report["selected_template"] = state.get("selected_template", {})
+
     return report
 
 
@@ -1262,5 +1270,125 @@ async def download_report(debate_id: str):
         headers={
             "Content-Disposition": f"attachment; filename=\"{ascii_filename}\"; filename*=UTF-8''{encoded_filename}",
             "Content-Length": str(len(pdf_bytes)),
+        },
+    )
+
+
+# ---------------------------------------------------------------------------
+# Complaint (소장) document export — complaint mode only
+# ---------------------------------------------------------------------------
+
+def _load_korean_font(pdf: "FPDF") -> bool:
+    """Register a Korean-capable font on the FPDF instance. Returns success."""
+    for font_path in (
+        os.path.join(os.environ.get("WINDIR", r"C:\Windows"), "Fonts", "malgun.ttf"),
+        "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
+        "/usr/share/fonts/nanum/NanumGothic.ttf",
+    ):
+        if os.path.isfile(font_path):
+            try:
+                pdf.add_font("KoreanFont", "", font_path, uni=True)
+                pdf.add_font("KoreanFont", "B", font_path, uni=True)
+                return True
+            except Exception:
+                continue
+    return False
+
+
+async def _get_complaint_state(debate_id: str) -> tuple[dict, str, str]:
+    """Load state, ensure report exists, and return (state, title, complaint_text)."""
+    state = DebateStore.load(debate_id)
+    if state.get("mode", "debate") != "complaint":
+        raise HTTPException(status_code=400, detail="This debate is not a complaint (소장) session.")
+
+    complaint_text = state.get("drafted_complaint", "")
+    if not complaint_text:
+        # Fall back to the cached report copy if present.
+        complaint_text = (state.get("report") or {}).get("drafted_complaint", "")
+    if not complaint_text:
+        raise HTTPException(status_code=404, detail="작성된 소장이 아직 없습니다.")
+
+    title = (state.get("selected_template") or {}).get("title", "소장")
+    return state, title, complaint_text
+
+
+def _complaint_to_pdf(title: str, complaint_text: str) -> bytes:
+    """Render the drafted 소장 as a plain, formal PDF document."""
+    pdf = FPDF()
+    pdf.set_margins(18, 18, 18)
+    pdf.set_auto_page_break(auto=True, margin=18)
+    font = "KoreanFont" if _load_korean_font(pdf) else "Helvetica"
+    pdf.add_page()
+    width = pdf.epw  # effective page width (page minus left/right margins)
+
+    pdf.set_font(font, "B", 16)
+    pdf.multi_cell(width, 10, title, align="C")
+    pdf.ln(4)
+
+    pdf.set_font(font, "", 11)
+    for line in complaint_text.split("\n"):
+        if line.strip():
+            pdf.multi_cell(width, 7, line)
+        else:
+            pdf.ln(4)
+
+    out = pdf.output(dest="S")
+    return out.encode("latin-1") if isinstance(out, str) else bytes(out)
+
+
+def _complaint_to_docx(title: str, complaint_text: str) -> bytes:
+    """Render the drafted 소장 as a .docx document."""
+    try:
+        import docx  # python-docx
+    except ImportError as exc:
+        raise HTTPException(
+            status_code=500,
+            detail="python-docx is not installed on the server.",
+        ) from exc
+
+    document = docx.Document()
+    heading = document.add_heading(title, level=0)
+    try:
+        heading.alignment = 1  # WD_ALIGN_PARAGRAPH.CENTER
+    except Exception:
+        pass
+    for line in complaint_text.split("\n"):
+        document.add_paragraph(line)
+
+    buf = io.BytesIO()
+    document.save(buf)
+    return buf.getvalue()
+
+
+@router.get("/{debate_id}/complaint/download/pdf")
+async def download_complaint_pdf(debate_id: str):
+    """Download the drafted 소장 as a PDF (complaint mode only)."""
+    _state, title, complaint_text = await _get_complaint_state(debate_id)
+    pdf_bytes = _complaint_to_pdf(title, complaint_text)
+    filename = f"complaint_{debate_id[:8]}.pdf"
+    encoded = quote(f"소장_{title}.pdf")
+    return StreamingResponse(
+        io.BytesIO(pdf_bytes),
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": f"attachment; filename=\"{filename}\"; filename*=UTF-8''{encoded}",
+            "Content-Length": str(len(pdf_bytes)),
+        },
+    )
+
+
+@router.get("/{debate_id}/complaint/download/word")
+async def download_complaint_word(debate_id: str):
+    """Download the drafted 소장 as a Word (.docx) document (complaint mode only)."""
+    _state, title, complaint_text = await _get_complaint_state(debate_id)
+    docx_bytes = _complaint_to_docx(title, complaint_text)
+    filename = f"complaint_{debate_id[:8]}.docx"
+    encoded = quote(f"소장_{title}.docx")
+    return StreamingResponse(
+        io.BytesIO(docx_bytes),
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers={
+            "Content-Disposition": f"attachment; filename=\"{filename}\"; filename*=UTF-8''{encoded}",
+            "Content-Length": str(len(docx_bytes)),
         },
     )
