@@ -1,0 +1,31 @@
+{
+  "id": "family_custody_designation",
+  "title": "친권자 및 양육자 지정 심판청구",
+  "category": "가사",
+  "subcategory": "마류 가사비송",
+  "doc_type": "심판청구서",
+  "description": "자녀의 친권자·양육자를 지정(또는 변경)해 달라고 구하는 심판청구.",
+  "when_to_use": "부모의 협의가 이루어지지 않아 법원이 자녀의 친권자·양육자를 정해야 하는 경우",
+  "sections": [
+    {
+      "name": "당사자",
+      "guide": "청구인·상대방의 성명, 주소, 사건본인(자녀)"
+    },
+    {
+      "name": "청구취지",
+      "guide": "사건본인의 친권자 및 양육자로 청구인을 지정한다. 라는 심판을 구합니다."
+    },
+    {
+      "name": "청구원인",
+      "guide": "양육 현황, 자녀의 복리(양육환경·의사·유대관계 등) 관련 사정"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "가족관계증명서, 주민등록표등본"
+    }
+  ],
+  "law_reference": "민법 제909조(친권자), 제837조",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

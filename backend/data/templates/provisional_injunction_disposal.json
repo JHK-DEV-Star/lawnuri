@@ -1,0 +1,39 @@
+{
+  "id": "provisional_injunction_disposal",
+  "title": "부동산처분금지가처분신청서",
+  "category": "신청",
+  "subcategory": "보전처분 · 가처분",
+  "doc_type": "신청서",
+  "description": "다툼 있는 부동산에 대해 처분(양도·담보설정 등)을 금지하는 가처분 신청서.",
+  "when_to_use": "소유권이전등기청구권 등 보전을 위해 본안 전 부동산 처분을 금지할 필요가 있는 경우",
+  "sections": [
+    {
+      "name": "당사자",
+      "guide": "채권자·채무자의 성명, 주소"
+    },
+    {
+      "name": "신청취지",
+      "guide": "채무자는 별지 목록 기재 부동산에 대하여 매매·증여·전세권·저당권·임차권의 설정 기타 일체의 처분행위를 하여서는 아니 된다. 라는 결정을 구합니다."
+    },
+    {
+      "name": "피보전권리",
+      "guide": "보전하려는 권리(소유권이전등기청구권 등)"
+    },
+    {
+      "name": "가처분의 이유",
+      "guide": "보전의 필요성"
+    },
+    {
+      "name": "목적물 표시",
+      "guide": "별지 부동산의 표시"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "부동산등기사항증명서, 소명자료"
+    }
+  ],
+  "law_reference": "민사집행법 제300조(가처분의 목적)",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

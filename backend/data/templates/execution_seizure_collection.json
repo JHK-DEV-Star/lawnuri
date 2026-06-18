@@ -1,0 +1,35 @@
+{
+  "id": "execution_seizure_collection",
+  "title": "채권압류 및 추심명령 신청서",
+  "category": "강제집행",
+  "subcategory": "채권집행",
+  "doc_type": "신청서",
+  "description": "집행권원에 기하여 채무자의 제3채무자에 대한 채권을 압류하고 추심을 구하는 신청서.",
+  "when_to_use": "확정판결·지급명령 등 집행권원으로 채무자의 예금·임금 등 채권을 추심하려는 경우",
+  "sections": [
+    {
+      "name": "당사자",
+      "guide": "채권자·채무자·제3채무자의 성명, 주소"
+    },
+    {
+      "name": "신청취지",
+      "guide": "채무자의 제3채무자에 대한 별지 기재 채권을 압류한다. 채권자는 위 압류채권을 추심할 수 있다. 라는 결정을 구합니다."
+    },
+    {
+      "name": "집행권원의 표시",
+      "guide": "확정판결·지급명령 등 집행권원과 집행문"
+    },
+    {
+      "name": "압류할 채권의 표시",
+      "guide": "별지 채권의 종류·범위"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "집행권원 정본, 송달·확정증명원"
+    }
+  ],
+  "law_reference": "민사집행법 제223조(채권압류), 제229조(추심명령)",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

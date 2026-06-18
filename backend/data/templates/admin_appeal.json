@@ -1,0 +1,39 @@
+{
+  "id": "admin_appeal",
+  "title": "행정심판청구서",
+  "category": "행정",
+  "subcategory": "행정심판",
+  "doc_type": "청구서",
+  "description": "위법·부당한 처분에 대해 행정심판위원회에 그 취소·변경 등을 구하는 청구서.",
+  "when_to_use": "행정소송 전(또는 대신) 행정심판을 통해 처분의 시정을 구하는 경우",
+  "sections": [
+    {
+      "name": "청구인",
+      "guide": "청구인의 성명, 주소, 연락처"
+    },
+    {
+      "name": "피청구인",
+      "guide": "처분을 한 행정청"
+    },
+    {
+      "name": "청구취지",
+      "guide": "피청구인이 OOOO.OO.OO. 청구인에게 한 OOO 처분을 취소한다. 라는 재결을 구합니다."
+    },
+    {
+      "name": "처분의 내용 및 경위",
+      "guide": "처분 내용과 통지일"
+    },
+    {
+      "name": "청구원인",
+      "guide": "처분의 위법·부당 사유"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "처분서 사본, 소명자료"
+    }
+  ],
+  "law_reference": "행정심판법 제28조(심판청구의 방식), 제27조(청구기간)",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

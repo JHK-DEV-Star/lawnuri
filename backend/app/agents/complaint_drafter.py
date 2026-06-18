@@ -16,6 +16,15 @@ from __future__ import annotations
 from app.agents.language import get_language_instruction, SIMULATION_FRAME_ADVOCATE
 
 
+# Disclaimer appended to every generated 소장 (legal accuracy/currency not guaranteed).
+COMPLAINT_DISCLAIMER = (
+    "─────────────────────────────────────────────\n"
+    "※ 본 문서는 AI가 공식 양식을 참고하여 생성한 초안(참고용)입니다. "
+    "법적 효력을 위해서는 제출 전 반드시 대한민국 법원 전자민원센터의 최신 공식 양식과 "
+    "현행 법령·판례를 직접 확인하고, 필요시 변호사 등 전문가의 검토를 받으시기 바랍니다."
+)
+
+
 # Shared anti-hallucination block (condensed from debater.py rules 1/3/9).
 _ANTI_HALLUCINATION = """
 # Citation Integrity (STRICT)
@@ -35,7 +44,11 @@ def _template_block(selected_template: dict) -> str:
     doc_type = selected_template.get("doc_type", "소장")
     category = selected_template.get("category", "")
     sections = selected_template.get("sections", [])
-    lines = [f"문서 종류: {doc_type} / 분야: {category}", f"양식 제목: {title}", "필수 섹션(이 순서·구조를 반드시 따를 것):"]
+    law_ref = selected_template.get("law_reference", "")
+    lines = [f"문서 종류: {doc_type} / 분야: {category}", f"양식 제목: {title}"]
+    if law_ref:
+        lines.append(f"관련 근거 법령: {law_ref}")
+    lines.append("필수 섹션(이 순서·구조를 반드시 따를 것):")
     if sections:
         for s in sections:
             name = s.get("name", "")

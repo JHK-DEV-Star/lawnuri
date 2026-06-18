@@ -1,0 +1,39 @@
+{
+  "id": "provisional_attachment_realestate",
+  "title": "부동산가압류신청서",
+  "category": "신청",
+  "subcategory": "보전처분 · 가압류",
+  "doc_type": "신청서",
+  "description": "금전채권 보전을 위해 채무자 소유 부동산을 가압류하는 신청서.",
+  "when_to_use": "본안 판결 전 채무자의 부동산 처분을 막아 장래 강제집행을 보전할 필요가 있는 경우",
+  "sections": [
+    {
+      "name": "당사자",
+      "guide": "채권자·채무자의 성명, 주소"
+    },
+    {
+      "name": "신청취지",
+      "guide": "채무자 소유의 별지 목록 기재 부동산을 가압류한다. 라는 결정을 구합니다."
+    },
+    {
+      "name": "피보전권리",
+      "guide": "보전하려는 금전채권의 내용과 금액"
+    },
+    {
+      "name": "가압류의 이유",
+      "guide": "보전의 필요성(처분·은닉 우려 등)"
+    },
+    {
+      "name": "목적물 표시",
+      "guide": "별지 부동산의 표시"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "부동산등기사항증명서, 소명자료, 담보제공 관련 서류"
+    }
+  ],
+  "law_reference": "민사집행법 제276조(가압류의 목적), 제278조",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

@@ -1,0 +1,31 @@
+{
+  "id": "family_child_support",
+  "title": "양육비 심판청구",
+  "category": "가사",
+  "subcategory": "마류 가사비송",
+  "doc_type": "심판청구서",
+  "description": "자녀의 양육비 지급(또는 변경)을 구하는 가사 심판청구.",
+  "when_to_use": "이혼 후(또는 별거 중) 상대방에게 자녀 양육비의 지급을 구하는 경우",
+  "sections": [
+    {
+      "name": "당사자",
+      "guide": "청구인·상대방의 성명, 주소, 사건본인(자녀)"
+    },
+    {
+      "name": "청구취지",
+      "guide": "상대방은 청구인에게 사건본인의 양육비로 OOOO.OO.부터 성년에 이르기 전날까지 매월 금 OOO원을 매월 말일에 지급하라."
+    },
+    {
+      "name": "청구원인",
+      "guide": "혼인·이혼 및 양육 현황, 자녀 수·연령, 양육비 산정 근거(양육비산정기준표)"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "가족관계증명서, 소득 관련 자료"
+    }
+  ],
+  "law_reference": "민법 제837조(양육책임), 가사소송법 제2조",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

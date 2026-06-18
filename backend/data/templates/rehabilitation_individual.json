@@ -1,0 +1,31 @@
+{
+  "id": "rehabilitation_individual",
+  "title": "개인회생 신청서",
+  "category": "개인회생/파산",
+  "subcategory": "개인회생",
+  "doc_type": "신청서",
+  "description": "일정 소득이 있는 개인채무자가 변제계획에 따라 채무를 조정받기 위한 신청서.",
+  "when_to_use": "정기적 소득이 있으나 채무가 과다하여 변제계획을 통해 채무를 조정·면책받으려는 경우",
+  "sections": [
+    {
+      "name": "신청인(채무자)",
+      "guide": "성명, 주민등록번호, 주소, 연락처"
+    },
+    {
+      "name": "신청취지",
+      "guide": "신청인에 대하여 개인회생절차를 개시한다. 라는 결정을 구합니다."
+    },
+    {
+      "name": "신청원인",
+      "guide": "채무 발생 경위, 총채무액, 소득·재산 현황, 변제계획 개요"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "채권자목록, 재산목록, 소득·지출 증빙, 변제계획안"
+    }
+  ],
+  "law_reference": "채무자 회생 및 파산에 관한 법률 제588조 이하",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

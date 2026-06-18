@@ -1,0 +1,31 @@
+{
+  "id": "deposit_repayment",
+  "title": "변제공탁서",
+  "category": "공탁",
+  "subcategory": "변제공탁",
+  "doc_type": "공탁서",
+  "description": "채권자의 수령 거부·수령 불능 등으로 변제할 수 없을 때 채무액을 공탁하는 서면.",
+  "when_to_use": "채권자가 변제를 받지 않거나 받을 수 없어 채무를 면하기 위해 공탁하려는 경우",
+  "sections": [
+    {
+      "name": "당사자",
+      "guide": "공탁자(채무자)·피공탁자(채권자)의 성명, 주소"
+    },
+    {
+      "name": "공탁취지",
+      "guide": "위 당사자 간 OOO 채무의 변제를 위하여 금 OOO원을 공탁합니다."
+    },
+    {
+      "name": "공탁원인사실",
+      "guide": "채무의 내용, 변제기, 채권자의 수령거부·수령불능 등 공탁사유"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "공탁통지서, 자격증명 서류"
+    }
+  ],
+  "law_reference": "민법 제487조(변제공탁), 공탁법",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

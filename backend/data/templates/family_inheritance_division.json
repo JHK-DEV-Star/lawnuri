@@ -1,0 +1,35 @@
+{
+  "id": "family_inheritance_division",
+  "title": "상속재산분할 심판청구",
+  "category": "가사",
+  "subcategory": "마류 가사비송",
+  "doc_type": "심판청구서",
+  "description": "공동상속인 간 상속재산의 분할 방법을 정해달라고 구하는 심판청구.",
+  "when_to_use": "협의분할이 이루어지지 않아 법원에 상속재산 분할을 구하는 경우",
+  "sections": [
+    {
+      "name": "당사자",
+      "guide": "청구인·상대방(공동상속인)의 성명, 주소"
+    },
+    {
+      "name": "청구취지",
+      "guide": "별지 목록 기재 상속재산을 다음과 같이 분할한다. 라는 심판을 구합니다."
+    },
+    {
+      "name": "청구원인",
+      "guide": "피상속인·상속개시일, 상속인 범위와 상속분, 상속재산의 내용, 분할방법에 관한 주장"
+    },
+    {
+      "name": "상속재산 표시",
+      "guide": "별지 부동산·예금·주식 등 목록"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "피상속인 기본증명서·가족관계증명서, 재산 소명자료"
+    }
+  ],
+  "law_reference": "민법 제1013조(협의에 의한 분할), 제1015조",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

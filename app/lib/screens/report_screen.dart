@@ -254,6 +254,21 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
           strategy.isEmpty ? '(분석 내용 없음)' : strategy,
           style: const TextStyle(height: 1.5),
         ),
+        const SizedBox(height: 12),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: const Color(0xFFFFF7E6),
+            border: Border.all(color: const Color(0xFFFFE0A3)),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: const Text(
+            '※ 본 소장은 AI가 공식 양식을 참고해 생성한 초안(참고용)입니다. '
+            '제출 전 반드시 법원 최신 공식 양식과 현행 법령을 확인하고, 필요시 전문가 검토를 받으세요.',
+            style: TextStyle(fontSize: 12, color: Color(0xFF8A6D3B)),
+          ),
+        ),
       ],
     );
   }

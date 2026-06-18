@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../api/settings_api.dart';
@@ -202,13 +203,21 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       } catch (_) {
         // legal_api endpoint not available yet, keep defaults
       }
-      // Load complaint settings (templates_dir)
+      // Load complaint settings (templates_dir). Show the EFFECTIVE default
+      // path in the field when the user hasn't set a custom override.
       try {
         final complaintSettings = await _api.getComplaintSettings();
+        final saved = (complaintSettings['templates_dir'] as String? ?? '').trim();
+        String shown = saved;
+        if (shown.isEmpty) {
+          try {
+            final r = await _api.getComplaintTemplates();
+            shown = r['dir'] as String? ?? '';
+          } catch (_) {}
+        }
         if (mounted) {
           setState(() {
-            _complaintTemplatesDirCtrl.text =
-                complaintSettings['templates_dir'] as String? ?? '';
+            _complaintTemplatesDirCtrl.text = shown;
           });
         }
       } catch (_) {
@@ -1265,14 +1274,57 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Disclaimer
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                margin: const EdgeInsets.only(bottom: 12),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF7E6),
+                  border: Border.all(color: const Color(0xFFFFE0A3)),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text(
+                  '※ 기본 제공 양식은 공식 양식을 참고한 참고용 스켈레톤입니다. '
+                  '제출 전 반드시 법원 최신 공식 양식과 현행 법령을 확인하세요.',
+                  style: TextStyle(fontSize: 12, color: Color(0xFF8A6D3B)),
+                ),
+              ),
               Text('기본 라운드: $rounds (고정)',
                   style: const TextStyle(color: _subtleText, fontSize: 13)),
               const SizedBox(height: 12),
-              TextField(
-                controller: _complaintTemplatesDirCtrl,
-                decoration: _inputDecoration('양식 폴더 경로 (비우면 기본 경로)',
-                    icon: Icons.folder_outlined),
-                onChanged: (_) => _autoSaveComplaintSettings(),
+              const Text('양식 폴더 경로',
+                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+              const SizedBox(height: 6),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _complaintTemplatesDirCtrl,
+                      decoration: _inputDecoration('양식 폴더 경로 (비우면 기본 경로)',
+                          icon: Icons.folder_outlined),
+                      onChanged: (_) => _autoSaveComplaintSettings(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  OutlinedButton.icon(
+                    onPressed: () async {
+                      final dir = await FilePicker.platform.getDirectoryPath(
+                        dialogTitle: '양식 폴더 선택',
+                      );
+                      if (dir != null && dir.isNotEmpty) {
+                        setState(() => _complaintTemplatesDirCtrl.text = dir);
+                        _autoSaveComplaintSettings();
+                      }
+                    },
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.black87,
+                      side: const BorderSide(color: _cardBorder),
+                    ),
+                    icon: const Icon(Icons.folder_open, size: 16),
+                    label: const Text('찾아보기'),
+                  ),
+                ],
               ),
               const SizedBox(height: 12),
               Row(
@@ -1294,23 +1346,46 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                 ],
               ),
               const SizedBox(height: 12),
-              ...templates.map((t) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.article_outlined,
+              ...templates.map((t) {
+                final meta = [
+                  (t['category'] ?? '').toString(),
+                  (t['doc_type'] ?? '').toString(),
+                ].where((s) => s.isNotEmpty).join(' · ');
+                final verified = (t['last_verified'] ?? '').toString();
+                final lawRef = (t['law_reference'] ?? '').toString();
+                final sub = [
+                  if (meta.isNotEmpty) meta,
+                  if (lawRef.isNotEmpty) lawRef,
+                  if (verified.isNotEmpty) '확인 $verified',
+                ].join('  ·  ');
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(top: 2),
+                        child: Icon(Icons.article_outlined,
                             size: 16, color: _subtleText),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            '${t['title'] ?? t['id']}'
-                            '${(t['category'] ?? '').toString().isNotEmpty ? '  ·  ${t['category']}' : ''}',
-                            style: const TextStyle(fontSize: 13),
-                          ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('${t['title'] ?? t['id']}',
+                                style: const TextStyle(fontSize: 13)),
+                            if (sub.isNotEmpty)
+                              Text(sub,
+                                  style: const TextStyle(
+                                      fontSize: 11, color: _subtleText)),
+                          ],
                         ),
-                      ],
-                    ),
-                  )),
+                      ),
+                    ],
+                  ),
+                );
+              }),
               if (templates.isEmpty)
                 const Text('감지된 양식이 없습니다. 폴더에 .json/.docx 양식을 넣고 새로고침하세요.',
                     style: TextStyle(color: _subtleText, fontSize: 12)),

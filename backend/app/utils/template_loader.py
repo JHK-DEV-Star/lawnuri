@@ -130,6 +130,11 @@ class TemplateLoader:
                 "description": data.get("description", ""),
                 "when_to_use": data.get("when_to_use", ""),
                 "sections": sections,
+                # Provenance metadata (optional — for source/currency disclosure)
+                "source": data.get("source", ""),
+                "source_url": data.get("source_url", ""),
+                "law_reference": data.get("law_reference", ""),
+                "last_verified": data.get("last_verified", ""),
                 "full_text": json.dumps(data, ensure_ascii=False, indent=2),
                 "source_file": fp.name,
             }
@@ -145,6 +150,10 @@ class TemplateLoader:
             "description": summary,
             "when_to_use": "",
             "sections": [],
+            "source": "",
+            "source_url": "",
+            "law_reference": "",
+            "last_verified": "",
             "full_text": text,
             "source_file": fp.name,
         }
@@ -164,6 +173,11 @@ class TemplateLoader:
         """Force a reload from disk (e.g. after the user drops new template files)."""
         return self.load_all()
 
+    def effective_dir(self) -> str:
+        """The folder templates are actually loaded from (resolved default or override)."""
+        self.ensure_loaded()
+        return self._loaded_dir or self._resolve_dir()
+
     # ---- access -----------------------------------------------------------
     def list_catalog(self) -> list[dict]:
         """Compact catalog for the selection LLM and the settings UI."""
@@ -176,6 +190,10 @@ class TemplateLoader:
                 "doc_type": t.get("doc_type", ""),
                 "description": t.get("description", ""),
                 "when_to_use": t.get("when_to_use", ""),
+                "source": t.get("source", ""),
+                "source_url": t.get("source_url", ""),
+                "law_reference": t.get("law_reference", ""),
+                "last_verified": t.get("last_verified", ""),
             }
             for t in self._templates.values()
         ]

@@ -1031,6 +1031,9 @@ async def _complaint_select_template(llm, situation: str, analysis: dict, langua
         "doc_type": tpl.get("doc_type", "소장"),
         "sections": tpl.get("sections", []),
         "full_text": tpl.get("full_text", ""),
+        "law_reference": tpl.get("law_reference", ""),
+        "source": tpl.get("source", ""),
+        "last_verified": tpl.get("last_verified", ""),
         "selection_reason": reason,
     }
 

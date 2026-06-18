@@ -1,0 +1,35 @@
+{
+  "id": "provisional_attachment_claim",
+  "title": "채권가압류신청서",
+  "category": "신청",
+  "subcategory": "보전처분 · 가압류",
+  "doc_type": "신청서",
+  "description": "채무자가 제3채무자에 대해 가진 채권(예금·임금 등)을 가압류하는 신청서.",
+  "when_to_use": "채무자의 예금·매출채권 등을 보전하여 장래 강제집행을 확보할 필요가 있는 경우",
+  "sections": [
+    {
+      "name": "당사자",
+      "guide": "채권자·채무자·제3채무자의 성명, 주소"
+    },
+    {
+      "name": "신청취지",
+      "guide": "채무자의 제3채무자에 대한 별지 기재 채권을 가압류한다. 제3채무자는 채무자에게 지급하여서는 아니 된다. 라는 결정을 구합니다."
+    },
+    {
+      "name": "피보전권리",
+      "guide": "보전하려는 금전채권의 내용과 금액"
+    },
+    {
+      "name": "가압류할 채권의 표시",
+      "guide": "별지 채권(예금·임금·매출채권 등)의 종류와 범위"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "소명자료, 담보제공 관련 서류"
+    }
+  ],
+  "law_reference": "민사집행법 제276조, 제291조(채권가압류)",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

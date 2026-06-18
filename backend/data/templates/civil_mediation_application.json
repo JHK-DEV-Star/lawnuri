@@ -1,0 +1,31 @@
+{
+  "id": "civil_mediation_application",
+  "title": "민사조정신청서",
+  "category": "신청",
+  "subcategory": "조정절차",
+  "doc_type": "신청서",
+  "description": "법원의 조정절차를 통해 분쟁의 원만한 해결을 구하는 신청서.",
+  "when_to_use": "소송 전(또는 소송 대신) 조정을 통해 신속·저렴하게 분쟁을 해결하려는 경우",
+  "sections": [
+    {
+      "name": "당사자",
+      "guide": "신청인·피신청인의 성명, 주소"
+    },
+    {
+      "name": "신청취지",
+      "guide": "피신청인은 신청인에게 금 OOO원을 지급한다는 취지의 조정을 구합니다."
+    },
+    {
+      "name": "분쟁의 내용",
+      "guide": "분쟁의 경위와 쟁점, 신청인의 주장과 희망 조정안"
+    },
+    {
+      "name": "첨부서류",
+      "guide": "관련 증빙, 송달료·인지 납부서"
+    }
+  ],
+  "law_reference": "민사조정법 제2조, 제5조",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

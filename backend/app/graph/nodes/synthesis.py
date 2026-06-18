@@ -11,7 +11,11 @@ In debate mode this node is never reached (gated by should_synthesize edge).
 
 from __future__ import annotations
 
-from app.agents.complaint_drafter import build_synthesis_prompt, build_draft_prompt
+from app.agents.complaint_drafter import (
+    build_synthesis_prompt,
+    build_draft_prompt,
+    COMPLAINT_DISCLAIMER,
+)
 from app.utils.llm_client import LLMClient
 from app.utils.logger import logger
 
@@ -93,6 +97,10 @@ async def synthesis_node(state: dict, llm_client: LLMClient, searcher=None) -> d
     except Exception as exc:
         logger.warning("[synthesis] Draft generation failed: %s", exc)
         drafted_complaint = ""
+
+    # Always append the disclaimer to the generated 소장 (deterministic).
+    if drafted_complaint.strip():
+        drafted_complaint = drafted_complaint.rstrip() + "\n\n" + COMPLAINT_DISCLAIMER
 
     return {
         "complaint_analysis": {

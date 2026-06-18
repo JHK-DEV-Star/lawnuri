@@ -10,6 +10,7 @@ class SettingsState {
   final Map<String, dynamic> legalApiSettings;
   final Map<String, dynamic> complaintSettings;
   final List<Map<String, dynamic>> complaintTemplates;
+  final String complaintTemplatesDir;
   final bool isLoading;
   final String? error;
 
@@ -20,6 +21,7 @@ class SettingsState {
     this.legalApiSettings = const {},
     this.complaintSettings = const {},
     this.complaintTemplates = const [],
+    this.complaintTemplatesDir = '',
     this.isLoading = false,
     this.error,
   });
@@ -32,6 +34,7 @@ class SettingsState {
     Map<String, dynamic>? legalApiSettings,
     Map<String, dynamic>? complaintSettings,
     List<Map<String, dynamic>>? complaintTemplates,
+    String? complaintTemplatesDir,
     bool? isLoading,
     String? error,
   }) {
@@ -42,6 +45,8 @@ class SettingsState {
       legalApiSettings: legalApiSettings ?? this.legalApiSettings,
       complaintSettings: complaintSettings ?? this.complaintSettings,
       complaintTemplates: complaintTemplates ?? this.complaintTemplates,
+      complaintTemplatesDir:
+          complaintTemplatesDir ?? this.complaintTemplatesDir,
       isLoading: isLoading ?? this.isLoading,
       error: error,
     );
@@ -72,13 +77,17 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
       final lang = debateSettings['language'] as String? ?? 'ko';
       S.setLanguage(lang);
 
+      final templatesResult = results[5] as Map<String, dynamic>;
+
       state = state.copyWith(
         availableModels: results[0] as List<Map<String, dynamic>>,
         providers: results[1] as Map<String, dynamic>,
         debateSettings: debateSettings,
         legalApiSettings: results[3] as Map<String, dynamic>,
         complaintSettings: results[4] as Map<String, dynamic>,
-        complaintTemplates: results[5] as List<Map<String, dynamic>>,
+        complaintTemplates:
+            templatesResult['templates'] as List<Map<String, dynamic>>,
+        complaintTemplatesDir: templatesResult['dir'] as String? ?? '',
         isLoading: false,
       );
     } catch (e) {
@@ -180,9 +189,13 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
     try {
       await _api.updateComplaintSettings(settings);
       await loadComplaintSettings();
-      // templates_dir may have changed → reload catalog.
-      final templates = await _api.getComplaintTemplates();
-      state = state.copyWith(complaintTemplates: templates, isLoading: false);
+      // templates_dir may have changed → reload catalog + effective dir.
+      final r = await _api.getComplaintTemplates();
+      state = state.copyWith(
+        complaintTemplates: r['templates'] as List<Map<String, dynamic>>,
+        complaintTemplatesDir: r['dir'] as String? ?? '',
+        isLoading: false,
+      );
     } catch (e) {
       state = state.copyWith(error: e.toString(), isLoading: false);
     }
@@ -191,8 +204,11 @@ class SettingsNotifier extends StateNotifier<SettingsState> {
   /// Reload 소장 templates from disk.
   Future<void> refreshComplaintTemplates() async {
     try {
-      final templates = await _api.refreshComplaintTemplates();
-      state = state.copyWith(complaintTemplates: templates);
+      final r = await _api.refreshComplaintTemplates();
+      state = state.copyWith(
+        complaintTemplates: r['templates'] as List<Map<String, dynamic>>,
+        complaintTemplatesDir: r['dir'] as String? ?? '',
+      );
     } catch (e) {
       state = state.copyWith(error: e.toString());
     }

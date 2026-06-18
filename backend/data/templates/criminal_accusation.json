@@ -1,0 +1,39 @@
+{
+  "id": "criminal_accusation",
+  "title": "고발장",
+  "category": "형사",
+  "subcategory": "고발",
+  "doc_type": "고발장",
+  "description": "범죄와 직접 관련 없는 제3자가 수사기관에 범죄사실을 신고하고 처벌을 구하는 서면.",
+  "when_to_use": "피해자가 아닌 사람이 알게 된 범죄(공익 침해 등)에 대해 수사·처벌을 요청하는 경우",
+  "sections": [
+    {
+      "name": "고발인",
+      "guide": "고발인의 성명, 주소, 연락처"
+    },
+    {
+      "name": "피고발인",
+      "guide": "피고발인의 성명·인적사항"
+    },
+    {
+      "name": "고발취지",
+      "guide": "피고발인을 OOO죄로 고발하오니 처벌하여 주시기 바랍니다."
+    },
+    {
+      "name": "범죄사실",
+      "guide": "일시·장소·방법·내용을 육하원칙에 따라 기재"
+    },
+    {
+      "name": "고발이유",
+      "guide": "범죄 인지 경위와 공익적 사유"
+    },
+    {
+      "name": "증거자료",
+      "guide": "관련 자료 목록"
+    }
+  ],
+  "law_reference": "형사소송법 제234조(고발)",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}

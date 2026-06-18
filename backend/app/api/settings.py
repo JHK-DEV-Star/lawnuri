@@ -828,7 +828,11 @@ async def list_complaint_templates():
     from app.utils.template_loader import get_template_loader
     loader = get_template_loader()
     loader.ensure_loaded()
-    return {"templates": loader.list_catalog(), "count": loader.count()}
+    return {
+        "templates": loader.list_catalog(),
+        "count": loader.count(),
+        "dir": loader.effective_dir(),
+    }
 
 
 @router.post("/complaint/templates/refresh")
@@ -837,7 +841,12 @@ async def refresh_complaint_templates():
     from app.utils.template_loader import get_template_loader
     loader = get_template_loader()
     count = loader.refresh()
-    return {"status": "ok", "count": count, "templates": loader.list_catalog()}
+    return {
+        "status": "ok",
+        "count": count,
+        "templates": loader.list_catalog(),
+        "dir": loader.effective_dir(),
+    }
 
 
 @router.get("")

@@ -1,0 +1,35 @@
+{
+  "id": "criminal_petition",
+  "title": "진정서",
+  "category": "형사",
+  "subcategory": "진정",
+  "doc_type": "진정서",
+  "description": "수사기관·국가기관에 일정한 사정을 진정하여 조사·시정을 구하는 서면.",
+  "when_to_use": "정식 고소·고발에 이르지 않더라도 부당한 사정의 조사·시정을 요청하려는 경우",
+  "sections": [
+    {
+      "name": "진정인",
+      "guide": "진정인의 성명, 주소, 연락처"
+    },
+    {
+      "name": "피진정인",
+      "guide": "피진정인의 성명·인적사항(있는 경우)"
+    },
+    {
+      "name": "진정취지",
+      "guide": "다음 사정에 대한 조사·시정을 구합니다."
+    },
+    {
+      "name": "진정내용",
+      "guide": "사실관계와 진정 사유를 구체적으로 기재"
+    },
+    {
+      "name": "첨부자료",
+      "guide": "관련 자료 목록"
+    }
+  ],
+  "law_reference": "—(수사기관 진정 사무)",
+  "source": "대한민국 법원 전자민원센터 양식모음",
+  "source_url": "https://www.scourt.go.kr/nm/minwon/doc/DocListAction.work",
+  "last_verified": "2026-06-18"
+}
